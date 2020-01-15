@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use App\Field;
 use App\Subscriber;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RemoveFieldTest extends TestCase
 {
