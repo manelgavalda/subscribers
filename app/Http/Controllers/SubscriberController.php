@@ -35,5 +35,16 @@ class SubscriberController extends Controller
     public function update(Subscriber $subscriber)
     {
     	$subscriber->update(request()->all());
+
+        return response($subscriber, 200);
+    }
+
+    public function delete(Subscriber $subscriber)
+    {
+    	$subscriber->delete();
+
+        $subscriber->fields->each->delete();
+
+        return response($subscriber, 200);
     }
 }

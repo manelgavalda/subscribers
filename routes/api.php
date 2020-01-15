@@ -13,3 +13,4 @@
 
 Route::post('subscribers', 'SubscriberController@store');
 Route::put('subscribers/{subscriber}', 'SubscriberController@update');
+Route::delete('subscribers/{subscriber}', 'SubscriberController@delete');
