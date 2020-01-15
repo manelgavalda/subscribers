@@ -23,6 +23,17 @@ class SubscriberController extends Controller
 	        ]
     	]);
 
-    	return Subscriber::create(request()->all());
+    	$subscriber = Subscriber::create(request()->all());
+
+    	foreach (request('fields', []) as $field) {
+    		$subscriber->fields()->create($field);
+    	}
+
+        return response($subscriber, 201);
+    }
+
+    public function update(Subscriber $subscriber)
+    {
+    	$subscriber->update(request()->all());
     }
 }

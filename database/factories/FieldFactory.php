@@ -9,6 +9,7 @@ $factory->define(Field::class, function (Faker $faker) {
     return [
         'title' => $faker->name,
         'type' => 'string',
+        'value' => 'string',
         'subscriber_id' => factory('App\Subscriber')
     ];
 });

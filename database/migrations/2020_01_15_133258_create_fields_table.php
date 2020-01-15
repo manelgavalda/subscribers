@@ -17,6 +17,7 @@ class CreateFieldsTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->enum('type', ['date', 'number', 'string', 'boolean']);
+            $table->string('value');
             $table->unsignedInteger('subscriber_id');
             $table->timestamps();
         });

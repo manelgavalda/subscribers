@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Field extends Model
 {
-    protected $fillable = ['title', 'type', 'subscriber_id'];
+    protected $fillable = ['title', 'type', 'value', 'subscriber_id'];
 }
