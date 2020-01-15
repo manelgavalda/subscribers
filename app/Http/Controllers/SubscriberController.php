@@ -28,7 +28,7 @@ class SubscriberController extends Controller
         return response($subscriber, 200);
     }
 
-    public function delete(Subscriber $subscriber)
+    public function destroy(Subscriber $subscriber)
     {
     	$subscriber->delete();
 

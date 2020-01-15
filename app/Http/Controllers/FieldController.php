@@ -18,7 +18,7 @@ class FieldController extends Controller
         return response($field, 200);
     }
 
-    public function delete(Field $field)
+    public function destroy(Field $field)
     {
     	$field->delete();
 

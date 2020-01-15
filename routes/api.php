@@ -11,10 +11,8 @@
 |
 */
 
-Route::post('subscribers', 'SubscriberController@store');
-Route::put('subscribers/{subscriber}', 'SubscriberController@update');
-Route::delete('subscribers/{subscriber}', 'SubscriberController@delete');
+Route::resource('subscribers', 'SubscriberController')
+	->only(['store', 'update', 'destroy']);
 
-Route::post('fields', 'FieldController@store');
-Route::put('fields/{field}', 'FieldController@update');
-Route::delete('fields/{field}', 'FieldController@delete');
+Route::resource('fields', 'FieldController')
+	->only(['store', 'update', 'destroy']);
