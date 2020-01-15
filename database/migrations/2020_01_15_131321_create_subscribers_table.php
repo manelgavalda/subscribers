@@ -17,7 +17,7 @@ class CreateSubscribersTable extends Migration
             $table->bigIncrements('id');
             $table->string('email')->unique();
             $table->string('name');
-            $table->enum('state', ['active', 'unsubscribed', 'junk', 'bounced', 'unconfirmed']);
+            $table->enum('state', ['active', 'unsubscribed', 'junk', 'bounced', 'unconfirmed'])->default('unconfirmed');
             $table->timestamps();
         });
     }
