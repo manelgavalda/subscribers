@@ -12,7 +12,7 @@ class RemoveSubscriberTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function the_subscriber_can_be_deleted()
+    public function a_subscriber_can_be_deleted()
     {
     	$subscriber = factory('App\Subscriber')->create();
 
@@ -25,7 +25,7 @@ class RemoveSubscriberTest extends TestCase
     }
 
     /** @test */
-    public function the_subscriber_fields_are_deleted_with_the_subscriber()
+    public function a_subscriber_fields_are_deleted_with_the_subscriber()
     {
     	$subscriber = factory('App\Subscriber')->create();
 
