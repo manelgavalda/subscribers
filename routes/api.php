@@ -14,3 +14,7 @@
 Route::post('subscribers', 'SubscriberController@store');
 Route::put('subscribers/{subscriber}', 'SubscriberController@update');
 Route::delete('subscribers/{subscriber}', 'SubscriberController@delete');
+
+Route::post('fields', 'FieldController@store');
+Route::put('fields/{field}', 'FieldController@update');
+Route::delete('fields/{field}', 'FieldController@delete');

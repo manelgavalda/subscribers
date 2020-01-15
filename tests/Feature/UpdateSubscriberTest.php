@@ -10,7 +10,48 @@ class UpdateSubscriberTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function the_subscriber_state_doesnt_change_when_updated_unless_is_created_explicitly()
+    public function a_subscriber_name_and_email_are_required_when_updating()
+    {
+        $subscriber = factory('App\Subscriber')->create();
+
+        $this->put("/api/subscribers/{$subscriber->id}", [
+            'name' => null,
+            'email' => null
+        ])->assertSessionHasErrors([
+            'name' => 'The name field is required.',
+            'email' => 'The email field is required.'
+        ]);
+    }
+
+    /** @test */
+    public function a_subscriber_email_must_be_in_a_valid_format_when_updating()
+    {
+        $subscriber = factory('App\Subscriber')->create();
+
+        $this->put("/api/subscribers/{$subscriber->id}", [
+            'name' => 'Manel',
+            'email' => 'invalidemailformat'
+        ])->assertSessionHasErrors([
+            'email' => 'The email must be a valid email address.'
+        ]);
+    }
+
+    // Internet connection for this
+    /** @test */
+    public function a_subscriber_email_domain_must_be_active_when_updating()
+    {
+        $subscriber = factory('App\Subscriber')->create();
+
+        $this->put("/api/subscribers/{$subscriber->id}", [
+            'name' => 'Manel',
+            'email' => 'manelgavalda@inactivedomain.com'
+        ])->assertSessionHasErrors([
+            'email' => 'The email domain must be active.'
+        ]);
+    }
+
+    /** @test */
+    public function a_subscriber_state_doesnt_change_when_updated_unless_is_created_explicitly_when_updating()
     {
     	$subscriberA = factory('App\Subscriber')->create([
     		'name' => 'Old Name',
@@ -35,15 +76,15 @@ class UpdateSubscriberTest extends TestCase
             'state' => 'active'
         ])->assertOk();
 
-        $newSubscriberA = $subscriberA->fresh();
-        $newSubscriberB = $subscriberB->fresh();
+        $subscriberA = $subscriberA->fresh();
+        $subscriberB = $subscriberB->fresh();
 
-        $this->assertEquals('New Name', $newSubscriberA->fresh()->name);
-        $this->assertEquals('newemail@mailerlite.com', $newSubscriberA->email);
-        $this->assertEquals('unsubscribed', $newSubscriberA->state);
+        $this->assertEquals('New Name', $subscriberA->name);
+        $this->assertEquals('newemail@mailerlite.com', $subscriberA->email);
+        $this->assertEquals('unsubscribed', $subscriberA->state);
 
-        $this->assertEquals('Another New Name', $newSubscriberB->fresh()->name);
-        $this->assertEquals('anothernewemail@mailerlite.com', $newSubscriberB->email);
-        $this->assertEquals('active', $newSubscriberB->state);
+        $this->assertEquals('Another New Name', $subscriberB->fresh()->name);
+        $this->assertEquals('anothernewemail@mailerlite.com', $subscriberB->email);
+        $this->assertEquals('active', $subscriberB->state);
     }
 }

@@ -19,7 +19,7 @@ class RemoveSubscriberTest extends TestCase
     	$this->assertCount(1, Subscriber::all());
 
     	$this->delete("api/subscribers/{$subscriber->id}")
-    		->assertOk();
+    		->assertStatus(204);
 
     	$this->assertCount(0, Subscriber::all());
     }
@@ -29,22 +29,14 @@ class RemoveSubscriberTest extends TestCase
     {
     	$subscriber = factory('App\Subscriber')->create();
 
-    	$subscriber->fields()->create([
-    		'title' => 'birthdate',
-    		'value' => today()->subYears(22)->format('Y-m-d'),
-    		'type' => 'date'
-    	]);
-
-    	$subscriber->fields()->create([
-    		'title' => 'birthplace',
-    		'value' => 'Polonia',
-    		'type' => 'string'
-    	]);
+        factory('App\Field', 2)->create([
+            'subscriber_id' => $subscriber->id
+        ]);
 
     	$this->assertCount(2, Field::all());
 
     	$this->delete("api/subscribers/{$subscriber->id}")
-    		->assertOk();
+    		->assertStatus(204);
 
     	$this->assertCount(0, Field::all());
 

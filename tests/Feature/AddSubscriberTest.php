@@ -10,7 +10,7 @@ class AddSubscriberTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function the_subscriber_requires_a_title_and_an_email()
+    public function a_subscriber_requires_a_title_and_an_email()
     {
         $this->post('/api/subscribers', [
             'name' => null,
@@ -22,7 +22,7 @@ class AddSubscriberTest extends TestCase
     }
 
     /** @test */
-    public function the_subscriber_email_must_be_in_a_valid_format()
+    public function a_subscriber_email_must_be_in_a_valid_format()
     {
         $this->post('/api/subscribers', [
             'name' => 'Manel',
@@ -34,7 +34,7 @@ class AddSubscriberTest extends TestCase
 
     // Internet connection for this
     /** @test */
-    public function the_subscriber_email_domain_must_be_active()
+    public function a_subscriber_email_domain_must_be_active()
     {
         $this->post('/api/subscribers', [
             'name' => 'Manel',
@@ -45,7 +45,7 @@ class AddSubscriberTest extends TestCase
     }
 
     /** @test */
-    public function the_subscriber_is_unconfirmed_by_default_unless_is_created_explicitly()
+    public function a_subscriber_is_unconfirmed_by_default_unless_is_created_explicitly()
     {
         $this->post('/api/subscribers', [
             'name' => 'Unconfirmed User',
@@ -84,15 +84,12 @@ class AddSubscriberTest extends TestCase
                 [
                     'title' => 'Birthplace',
                     'type' => 'string',
-                    'value' => 'Polonia'
+                    'value' => 'Amsterdam'
                 ],
             ]
         ]);
 
-        $this->assertDatabaseHas('subscribers', [
-            'name' => 'Manel',
-            'email' => 'manelgavalda@mailerlite.com'
-        ])->assertDatabaseHas('fields', [
+        $this->assertDatabaseHas('fields', [
             'title' => 'Birthdate',
             'type' => 'date',
             'value' => today()->subYears(22)->format('Y-m-d'),
@@ -100,7 +97,7 @@ class AddSubscriberTest extends TestCase
         ])->assertDatabaseHas('fields', [
             'title' => 'Birthplace',
             'type' => 'string',
-            'value' => 'Polonia',
+            'value' => 'Amsterdam',
             'subscriber_id' => 1
         ]);
     }

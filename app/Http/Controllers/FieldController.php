@@ -2,9 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Field;
 
 class FieldController extends Controller
 {
-    //
+    public function store()
+    {
+    	return Field::create($this->validatedAttributes());
+    }
+
+    public function update(Field $field)
+    {
+    	$field->update($this->validatedAttributes());
+
+        return response($field, 200);
+    }
+
+    public function delete(Field $field)
+    {
+    	$field->delete();
+
+        return response($field, 204);
+    }
+
+    protected function validatedAttributes()
+    {
+    	return request()->validate([
+    		'title' => 'required',
+    		'type' => 'required',
+    		'value' => 'required',
+    		'subscriber_id' => 'required'
+    	]);
+    }
 }
