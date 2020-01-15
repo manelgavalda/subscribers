@@ -43,7 +43,7 @@ class SubscriberController extends Controller
     {
     	$subscriber->delete();
 
-        $subscriber->fields->each->delete();
+        $subscriber->fields()->delete();
 
         return response($subscriber, 200);
     }
