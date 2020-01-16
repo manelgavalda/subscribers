@@ -67,6 +67,7 @@
 
     <subscriber-dialog
 	    ref="dialog"
+    	dataSubscriber="subscriber"
 	    @saveSubscriber="saveSubscriber"
 	  ></subscriber-dialog>
 
@@ -108,6 +109,8 @@
     			data: data.subscriber
     		};
 
+    		this.subscriber = data.subscriber;
+
     		this.openDialog(form);
     	},
     	openDialog(form) {
@@ -117,8 +120,7 @@
     		this.subscribers.splice(index, 1);
     	},
     	saveSubscriber(subscriber) {
-    		console.log(subscriber);
-    		// this.subscribers.push(subscriber);
+    		this.subscribers.push(subscriber);
     	}
     }
   }

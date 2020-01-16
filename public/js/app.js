@@ -2007,6 +2007,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2045,6 +2046,7 @@ __webpack_require__.r(__webpack_exports__);
         url: "/api/subscribers/".concat(data.subscriber.id),
         data: data.subscriber
       };
+      this.subscriber = data.subscriber;
       this.openDialog(form);
     },
     openDialog: function openDialog(form) {
@@ -2058,7 +2060,7 @@ __webpack_require__.r(__webpack_exports__);
       this.subscribers.splice(index, 1);
     },
     saveSubscriber: function saveSubscriber(subscriber) {
-      console.log(subscriber); // this.subscribers.push(subscriber);
+      this.subscribers.push(subscriber);
     }
   }
 });
@@ -2135,8 +2137,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['dataSubscriber'],
   data: function data() {
     return {
+      subscriber: {
+        name: null,
+        email: null,
+        state: 'unconfirmed'
+      },
       form: {
         data: {}
       },
@@ -2145,9 +2153,13 @@ __webpack_require__.r(__webpack_exports__);
       saving: false
     };
   },
+  mounted: function mounted() {
+    this.subscriber = this.dataSubscriber;
+  },
   methods: {
     open: function open(form) {
       this.form = form;
+      this.subscriber = form.data;
       this.dialog = true;
     },
     close: function close() {
@@ -19978,6 +19990,7 @@ var render = function() {
       _vm._v(" "),
       _c("subscriber-dialog", {
         ref: "dialog",
+        attrs: { dataSubscriber: "subscriber" },
         on: { saveSubscriber: _vm.saveSubscriber }
       })
     ],
@@ -20048,11 +20061,11 @@ var render = function() {
                               _c("v-text-field", {
                                 attrs: { required: "", label: "Name*" },
                                 model: {
-                                  value: _vm.form.data.name,
+                                  value: _vm.subscriber.name,
                                   callback: function($$v) {
-                                    _vm.$set(_vm.form.data, "name", $$v)
+                                    _vm.$set(_vm.subscriber, "name", $$v)
                                   },
-                                  expression: "form.data.name"
+                                  expression: "subscriber.name"
                                 }
                               }),
                               _vm._v(" "),
@@ -20076,11 +20089,11 @@ var render = function() {
                               _c("v-text-field", {
                                 attrs: { required: "", label: "Email*" },
                                 model: {
-                                  value: _vm.form.data.email,
+                                  value: _vm.subscriber.email,
                                   callback: function($$v) {
-                                    _vm.$set(_vm.form.data, "email", $$v)
+                                    _vm.$set(_vm.subscriber, "email", $$v)
                                   },
-                                  expression: "form.data.email"
+                                  expression: "subscriber.email"
                                 }
                               }),
                               _vm._v(" "),
@@ -20114,11 +20127,11 @@ var render = function() {
                                   required: ""
                                 },
                                 model: {
-                                  value: _vm.form.data.state,
+                                  value: _vm.subscriber.state,
                                   callback: function($$v) {
-                                    _vm.$set(_vm.form.data, "state", $$v)
+                                    _vm.$set(_vm.subscriber, "state", $$v)
                                   },
-                                  expression: "form.data.state"
+                                  expression: "subscriber.state"
                                 }
                               })
                             ],

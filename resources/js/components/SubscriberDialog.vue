@@ -12,7 +12,7 @@
 	              <v-text-field
 	                required
 	                label="Name*"
-	                v-model="form.data.name"
+	                v-model="subscriber.name"
 	              ></v-text-field>
 	              <p v-for="error in errors.name">
 	                <ul>
@@ -24,7 +24,7 @@
 	              <v-text-field
 	                required
 	                label="Email*"
-	                v-model="form.data.email"
+	                v-model="subscriber.email"
 	              ></v-text-field>
 	              <p v-for="error in errors.email">
 	                <ul>
@@ -35,7 +35,7 @@
 	            </v-col>
 	            <v-col cols="12">
 	              <v-select
-	                v-model="form.data.state"
+	                v-model="subscriber.state"
 	                :items="['active', 'unsubscribed', 'junk', 'bounced', 'unconfirmed']"
 	                label="State*"
 	                required
@@ -60,7 +60,13 @@
 </template>
 <script>
 	export default {
+		props: ['dataSubscriber'],
 		data: () => ({
+			subscriber: {
+				name: null,
+				email: null,
+				state: 'unconfirmed'
+			},
 			form: {
 				data: {}
 			},
@@ -68,9 +74,15 @@
       dialog: false,
       saving: false
 		}),
+		mounted() {
+			this.subscriber = this.dataSubscriber;
+		},
 		methods: {
       open(form) {
       	this.form = form;
+
+      	this.subscriber = form.data;
+
         this.dialog = true;
       },
       close() {
