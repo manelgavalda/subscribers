@@ -12,10 +12,10 @@ class FieldsTableSeeder extends Seeder
      */
     public function run()
     {
-    	foreach(Subscriber::all() as $subscriber) {
+    	foreach (Subscriber::all() as $subscriber) {
     		factory('App\Field', 2)->create([
     			'subscriber_id' => $subscriber->id
-    		])
+    		]);
     	}
     }
 }
