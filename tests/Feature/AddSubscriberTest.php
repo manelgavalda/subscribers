@@ -55,7 +55,7 @@ class AddSubscriberTest extends TestCase
         $this->post('/api/subscribers', [
             'name' => 'Active User',
             'email' => 'activeuser@mailerlite.com',
-            'state' => 'active',
+            'state' => 'active'
         ])->assertCreated();
 
         $this->assertDatabaseHas('subscribers', [

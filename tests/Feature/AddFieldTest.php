@@ -16,7 +16,7 @@ class AddFieldTest extends TestCase
             'title' => null,
             'type' => null,
             'value' => null,
-            'subscriber_id' => null,
+            'subscriber_id' => null
         ])->assertSessionHasErrors([
             'title' => 'The title field is required.',
             'type' => 'The type field is required.',
@@ -35,7 +35,8 @@ class AddFieldTest extends TestCase
             'subscriber_id' => 1
         ];
 
-        $this->post('/api/fields', $attributes)->assertCreated();
+        $this->post('/api/fields', $attributes)
+        	->assertCreated();
 
         $this->assertDatabaseHas('fields', $attributes);
     }
