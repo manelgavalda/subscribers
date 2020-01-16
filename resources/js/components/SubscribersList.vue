@@ -4,7 +4,7 @@
     class="mx-auto"
   >
     <v-toolbar
-      color="deep-purple accent-4"
+      color="#55A256"
       dark
     >
       <v-toolbar-title>Subscribers</v-toolbar-title>
@@ -17,8 +17,6 @@
     </v-toolbar>
 
     <v-list subheader>
-      <v-subheader>Recent chat</v-subheader>
-
       <v-list-item
         v-for="(subscriber, index) in subscribers"
         :key="subscriber.id"
@@ -26,14 +24,8 @@
       >
         <v-list-item-content>
           <v-list-item-title v-text="subscriber.name"></v-list-item-title>
+          <v-list-item-subtitle v-text="subscriber.email"></v-list-item-subtitle>
         </v-list-item-content>
-        <v-list-item-content>
-          <v-list-item-title v-text="subscriber.email"></v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-content>
-          <v-list-item-title v-text="subscriber.state"></v-list-item-title>
-        </v-list-item-content>
-
         <v-list-item-icon>
           <v-icon>mdi-pencil</v-icon>
           <v-icon @click="removeSubscriber(subscriber.id, index)">mdi-delete</v-icon>
@@ -44,20 +36,11 @@
 </template>
 <script>
   export default {
-    data: () => ({
-      subscribers: [],
-    }),
-    mounted() {
-    	this.getSubscribers()
-    },
+    props: ['subscribers'],
     methods: {
-    	getSubscribers() {
-    		axios.get('/api/subscribers')
-    			.then(({data}) => this.subscribers = data);
-    	},
     	removeSubscriber(id, index) {
     		axios.delete(`/api/subscribers/${id}`)
-    			.then(this.subscribers.splice(index, 1));
+    			.then(this.$emit('removeSubscriber', index));
     	}
     }
   }

@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class AddSubscriberTest extends TestCase
 {
@@ -26,7 +27,7 @@ class AddSubscriberTest extends TestCase
     {
         $this->post('/api/subscribers', [
             'name' => 'Manel',
-            'email' => 'invalidemailformat'
+            'email' => 'e'
         ])->assertSessionHasErrors([
             'email' => 'The email must be a valid email address.'
         ]);
@@ -41,6 +42,22 @@ class AddSubscriberTest extends TestCase
             'email' => 'manelgavalda@inactivedomain.com'
         ])->assertSessionHasErrors([
             'email' => 'The email domain must be active.'
+        ]);
+    }
+
+    /** @test */
+    public function a_subscriber_email_must_be_unique()
+    {
+        $this->post('/api/subscribers', [
+            'name' => 'Manel',
+            'email' => 'manel@gmail.com'
+        ])->assertCreated();
+
+        $this->post('/api/subscribers', [
+            'name' => 'Manel',
+            'email' => 'manel@gmail.com'
+        ])->assertSessionHasErrors([
+            'email' => 'The email has already been taken.'
         ]);
     }
 

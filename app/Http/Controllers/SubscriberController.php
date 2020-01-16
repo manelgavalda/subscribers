@@ -47,8 +47,10 @@ class SubscriberController extends Controller
         request()->validate([
             'name' => 'required',
             'email' => [
+                'bail',
                 'required',
                 'email',
+                'unique:subscribers',
                 function ($attribute, $value, $fail) {
                     $domain = substr($value, strpos($value, '@') + 1);
 

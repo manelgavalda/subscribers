@@ -44,10 +44,11 @@
 			  	<v-col cols="9" sm="9">
 						Subscribers
 					</v-col>
-					<v-col cols="3" sm="3">
-		        <v-btn depressed color="primary">Create Subscriber</v-btn>
-	    		</v-col>
 
+					<create-subscriber-button
+						:subscribers="subscribers"
+						@createSubscriber="createSubscriber"
+					></create-subscriber-button>
 				</v-row>
 			</v-container>
 
@@ -55,7 +56,10 @@
         class="fill-height"
         fluid
       >
-      	<subscribers-list></subscribers-list>
+      	<subscribers-list
+					:subscribers="subscribers"
+					@removeSubscriber="removeSubscriber"
+      	></subscribers-list>
       </v-container>
     </v-content>
   </v-app>
@@ -65,6 +69,22 @@
   export default {
     data: () => ({
       drawer: null,
+    	subscribers: []
     }),
+    mounted() {
+    	this.getSubscribers();
+    },
+    methods: {
+    	getSubscribers() {
+    		axios.get('/api/subscribers')
+    			.then(({data}) => this.subscribers = data);
+    	},
+    	removeSubscriber(index) {
+    		this.subscribers.splice(index, 1);
+    	},
+    	createSubscriber(subscriber) {
+    		this.subscribers.push(subscriber);
+    	}
+    }
   }
 </script>
