@@ -33,7 +33,6 @@ class AddSubscriberTest extends TestCase
         ]);
     }
 
-    // Internet connection for this
     /** @test */
     public function a_subscriber_email_domain_must_be_active()
     {
@@ -64,6 +63,8 @@ class AddSubscriberTest extends TestCase
     /** @test */
     public function a_subscriber_is_unconfirmed_by_default_unless_is_created_explicitly()
     {
+        $this->withoutExceptionHandling();
+
         $this->post('/api/subscribers', [
             'name' => 'Unconfirmed User',
             'email' => 'unconfirmeduser@mailerlite.com'

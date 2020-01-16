@@ -45,10 +45,11 @@
 						Subscribers
 					</v-col>
 
-					<create-subscriber-button
-						:subscribers="subscribers"
-						@createSubscriber="createSubscriber"
-					></create-subscriber-button>
+        	<v-btn
+        		dark
+        		color="#F0821C"
+        		@click="openCreateDialog"
+      		>Create Subscriber</v-btn>
 				</v-row>
 			</v-container>
 
@@ -58,10 +59,17 @@
       >
       	<subscribers-list
 					:subscribers="subscribers"
+					@openEditDialog="openEditDialog"
 					@removeSubscriber="removeSubscriber"
       	></subscribers-list>
       </v-container>
     </v-content>
+
+    <subscriber-dialog
+	    ref="dialog"
+	    @saveSubscriber="saveSubscriber"
+	  ></subscriber-dialog>
+
   </v-app>
 </template>
 
@@ -79,11 +87,38 @@
     		axios.get('/api/subscribers')
     			.then(({data}) => this.subscribers = data);
     	},
+    	openCreateDialog() {
+    		const form = {
+    			method: 'post',
+    			url: '/api/subscribers',
+    			data: {
+	    			id: '0',
+	    			name: '',
+	    			email: '',
+	    			state: 'unconfirmed'
+	    		}
+    		};
+
+    		this.openDialog(form);
+    	},
+    	openEditDialog(data) {
+    		const form = {
+    			method: 'put',
+    			url: `/api/subscribers/${data.subscriber.id}`,
+    			data: data.subscriber
+    		};
+
+    		this.openDialog(form);
+    	},
+    	openDialog(form) {
+    		Vue.nextTick(() => this.$refs.dialog.open(form))
+    	},
     	removeSubscriber(index) {
     		this.subscribers.splice(index, 1);
     	},
-    	createSubscriber(subscriber) {
-    		this.subscribers.push(subscriber);
+    	saveSubscriber(subscriber) {
+    		console.log(subscriber);
+    		// this.subscribers.push(subscriber);
     	}
     }
   }

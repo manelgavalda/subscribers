@@ -1999,6 +1999,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2018,21 +2026,49 @@ __webpack_require__.r(__webpack_exports__);
         return _this.subscribers = data;
       });
     },
+    openCreateDialog: function openCreateDialog() {
+      var form = {
+        method: 'post',
+        url: '/api/subscribers',
+        data: {
+          id: '0',
+          name: '',
+          email: '',
+          state: 'unconfirmed'
+        }
+      };
+      this.openDialog(form);
+    },
+    openEditDialog: function openEditDialog(data) {
+      var form = {
+        method: 'put',
+        url: "/api/subscribers/".concat(data.subscriber.id),
+        data: data.subscriber
+      };
+      this.openDialog(form);
+    },
+    openDialog: function openDialog(form) {
+      var _this2 = this;
+
+      Vue.nextTick(function () {
+        return _this2.$refs.dialog.open(form);
+      });
+    },
     removeSubscriber: function removeSubscriber(index) {
       this.subscribers.splice(index, 1);
     },
-    createSubscriber: function createSubscriber(subscriber) {
-      this.subscribers.push(subscriber);
+    saveSubscriber: function saveSubscriber(subscriber) {
+      console.log(subscriber); // this.subscribers.push(subscriber);
     }
   }
 });
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CreateSubscriberButton.vue?vue&type=script&lang=js&":
-/*!*********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CreateSubscriberButton.vue?vue&type=script&lang=js& ***!
-  \*********************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SubscriberDialog.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SubscriberDialog.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2098,16 +2134,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      subscriber: {
-        name: '',
-        email: '',
-        state: 'unsubscribed'
+      form: {
+        data: {}
       },
       errors: [],
       dialog: false,
@@ -2115,24 +2146,28 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    closeDialog: function closeDialog() {
+    open: function open(form) {
+      this.form = form;
+      this.dialog = true;
+    },
+    close: function close() {
       this.dialog = false;
     },
-    saveSubscriber: function saveSubscriber() {
+    editSubscriber: function editSubscriber() {
       this.saving = true;
-      axios.post('/api/subscribers', this.subscriber).then(this.createSubscriber)["catch"](this.getErrors);
+      axios[this.form.method](this.form.url, this.form.data).then(this.saveSubscriber)["catch"](this.getErrors);
     },
-    createSubscriber: function createSubscriber(_ref) {
+    saveSubscriber: function saveSubscriber(_ref) {
       var data = _ref.data;
-      this.$emit('createSubscriber', data);
+      this.$emit('saveSubscriber', data);
       this.subscriber = {
         name: '',
         email: '',
-        state: 'unsubscribed'
+        state: 'unconfirmed'
       };
+      this.close();
       this.errors = [];
       this.saving = false;
-      this.closeDialog();
     },
     getErrors: function getErrors(_ref2) {
       var response = _ref2.response;
@@ -2189,9 +2224,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['subscribers'],
   methods: {
+    openEditDialog: function openEditDialog(subscriber, index) {
+      this.$emit('openEditDialog', {
+        subscriber: subscriber,
+        index: index
+      });
+    },
     removeSubscriber: function removeSubscriber(id, index) {
       axios["delete"]("/api/subscribers/".concat(id)).then(this.$emit('removeSubscriber', index));
     }
@@ -19898,10 +19943,14 @@ var render = function() {
                     _vm._v("\n\t\t\t\t\t\tSubscribers\n\t\t\t\t\t")
                   ]),
                   _vm._v(" "),
-                  _c("create-subscriber-button", {
-                    attrs: { subscribers: _vm.subscribers },
-                    on: { createSubscriber: _vm.createSubscriber }
-                  })
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { dark: "", color: "#F0821C" },
+                      on: { click: _vm.openCreateDialog }
+                    },
+                    [_vm._v("Create Subscriber")]
+                  )
                 ],
                 1
               )
@@ -19915,14 +19964,22 @@ var render = function() {
             [
               _c("subscribers-list", {
                 attrs: { subscribers: _vm.subscribers },
-                on: { removeSubscriber: _vm.removeSubscriber }
+                on: {
+                  openEditDialog: _vm.openEditDialog,
+                  removeSubscriber: _vm.removeSubscriber
+                }
               })
             ],
             1
           )
         ],
         1
-      )
+      ),
+      _vm._v(" "),
+      _c("subscriber-dialog", {
+        ref: "dialog",
+        on: { saveSubscriber: _vm.saveSubscriber }
+      })
     ],
     1
   )
@@ -19934,10 +19991,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CreateSubscriberButton.vue?vue&type=template&id=2711a7fe&":
-/*!*************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CreateSubscriberButton.vue?vue&type=template&id=2711a7fe& ***!
-  \*************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SubscriberDialog.vue?vue&type=template&id=763df23b&":
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SubscriberDialog.vue?vue&type=template&id=763df23b& ***!
+  \*******************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -19957,21 +20014,6 @@ var render = function() {
         "v-dialog",
         {
           attrs: { persistent: "", "max-width": "600px" },
-          scopedSlots: _vm._u([
-            {
-              key: "activator",
-              fn: function(ref) {
-                var on = ref.on
-                return [
-                  _c(
-                    "v-btn",
-                    _vm._g({ attrs: { color: "#F0821C", dark: "" } }, on),
-                    [_vm._v("Create Subscriber")]
-                  )
-                ]
-              }
-            }
-          ]),
           model: {
             value: _vm.dialog,
             callback: function($$v) {
@@ -19981,7 +20023,6 @@ var render = function() {
           }
         },
         [
-          _vm._v(" "),
           _c(
             "v-card",
             [
@@ -20007,11 +20048,11 @@ var render = function() {
                               _c("v-text-field", {
                                 attrs: { required: "", label: "Name*" },
                                 model: {
-                                  value: _vm.subscriber.name,
+                                  value: _vm.form.data.name,
                                   callback: function($$v) {
-                                    _vm.$set(_vm.subscriber, "name", $$v)
+                                    _vm.$set(_vm.form.data, "name", $$v)
                                   },
-                                  expression: "subscriber.name"
+                                  expression: "form.data.name"
                                 }
                               }),
                               _vm._v(" "),
@@ -20035,11 +20076,11 @@ var render = function() {
                               _c("v-text-field", {
                                 attrs: { required: "", label: "Email*" },
                                 model: {
-                                  value: _vm.subscriber.email,
+                                  value: _vm.form.data.email,
                                   callback: function($$v) {
-                                    _vm.$set(_vm.subscriber, "email", $$v)
+                                    _vm.$set(_vm.form.data, "email", $$v)
                                   },
-                                  expression: "subscriber.email"
+                                  expression: "form.data.email"
                                 }
                               }),
                               _vm._v(" "),
@@ -20073,11 +20114,11 @@ var render = function() {
                                   required: ""
                                 },
                                 model: {
-                                  value: _vm.subscriber.state,
+                                  value: _vm.form.data.state,
                                   callback: function($$v) {
-                                    _vm.$set(_vm.subscriber, "state", $$v)
+                                    _vm.$set(_vm.form.data, "state", $$v)
                                   },
-                                  expression: "subscriber.state"
+                                  expression: "form.data.state"
                                 }
                               })
                             ],
@@ -20102,7 +20143,7 @@ var render = function() {
                     "v-btn",
                     {
                       attrs: { color: "blue darken-1", text: "" },
-                      on: { click: _vm.closeDialog }
+                      on: { click: _vm.close }
                     },
                     [_vm._v("Close")]
                   ),
@@ -20115,7 +20156,7 @@ var render = function() {
                         color: "blue darken-1",
                         disabled: _vm.saving
                       },
-                      on: { click: _vm.saveSubscriber }
+                      on: { click: _vm.editSubscriber }
                     },
                     [_vm._v("Save")]
                   )
@@ -20201,7 +20242,17 @@ var render = function() {
               _c(
                 "v-list-item-icon",
                 [
-                  _c("v-icon", [_vm._v("mdi-pencil")]),
+                  _c(
+                    "v-icon",
+                    {
+                      on: {
+                        click: function($event) {
+                          return _vm.openEditDialog(subscriber, index)
+                        }
+                      }
+                    },
+                    [_vm._v("mdi-pencil")]
+                  ),
                   _vm._v(" "),
                   _c(
                     "v-icon",
@@ -73473,7 +73524,7 @@ module.exports = function(module) {
 
 var map = {
 	"./components/App.vue": "./resources/js/components/App.vue",
-	"./components/CreateSubscriberButton.vue": "./resources/js/components/CreateSubscriberButton.vue",
+	"./components/SubscriberDialog.vue": "./resources/js/components/SubscriberDialog.vue",
 	"./components/SubscribersList.vue": "./resources/js/components/SubscribersList.vue"
 };
 
@@ -73660,17 +73711,17 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/CreateSubscriberButton.vue":
-/*!************************************************************!*\
-  !*** ./resources/js/components/CreateSubscriberButton.vue ***!
-  \************************************************************/
+/***/ "./resources/js/components/SubscriberDialog.vue":
+/*!******************************************************!*\
+  !*** ./resources/js/components/SubscriberDialog.vue ***!
+  \******************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _CreateSubscriberButton_vue_vue_type_template_id_2711a7fe___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreateSubscriberButton.vue?vue&type=template&id=2711a7fe& */ "./resources/js/components/CreateSubscriberButton.vue?vue&type=template&id=2711a7fe&");
-/* harmony import */ var _CreateSubscriberButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CreateSubscriberButton.vue?vue&type=script&lang=js& */ "./resources/js/components/CreateSubscriberButton.vue?vue&type=script&lang=js&");
+/* harmony import */ var _SubscriberDialog_vue_vue_type_template_id_763df23b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SubscriberDialog.vue?vue&type=template&id=763df23b& */ "./resources/js/components/SubscriberDialog.vue?vue&type=template&id=763df23b&");
+/* harmony import */ var _SubscriberDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SubscriberDialog.vue?vue&type=script&lang=js& */ "./resources/js/components/SubscriberDialog.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -73680,9 +73731,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _CreateSubscriberButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _CreateSubscriberButton_vue_vue_type_template_id_2711a7fe___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _CreateSubscriberButton_vue_vue_type_template_id_2711a7fe___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _SubscriberDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _SubscriberDialog_vue_vue_type_template_id_763df23b___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _SubscriberDialog_vue_vue_type_template_id_763df23b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -73692,38 +73743,38 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/CreateSubscriberButton.vue"
+component.options.__file = "resources/js/components/SubscriberDialog.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/CreateSubscriberButton.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************!*\
-  !*** ./resources/js/components/CreateSubscriberButton.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************/
+/***/ "./resources/js/components/SubscriberDialog.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/components/SubscriberDialog.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateSubscriberButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CreateSubscriberButton.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CreateSubscriberButton.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateSubscriberButton_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./SubscriberDialog.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SubscriberDialog.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/CreateSubscriberButton.vue?vue&type=template&id=2711a7fe&":
-/*!*******************************************************************************************!*\
-  !*** ./resources/js/components/CreateSubscriberButton.vue?vue&type=template&id=2711a7fe& ***!
-  \*******************************************************************************************/
+/***/ "./resources/js/components/SubscriberDialog.vue?vue&type=template&id=763df23b&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/SubscriberDialog.vue?vue&type=template&id=763df23b& ***!
+  \*************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateSubscriberButton_vue_vue_type_template_id_2711a7fe___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./CreateSubscriberButton.vue?vue&type=template&id=2711a7fe& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CreateSubscriberButton.vue?vue&type=template&id=2711a7fe&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateSubscriberButton_vue_vue_type_template_id_2711a7fe___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberDialog_vue_vue_type_template_id_763df23b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./SubscriberDialog.vue?vue&type=template&id=763df23b& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SubscriberDialog.vue?vue&type=template&id=763df23b&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberDialog_vue_vue_type_template_id_763df23b___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateSubscriberButton_vue_vue_type_template_id_2711a7fe___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberDialog_vue_vue_type_template_id_763df23b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

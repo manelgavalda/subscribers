@@ -27,8 +27,12 @@
           <v-list-item-subtitle v-text="subscriber.email"></v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-icon>
-          <v-icon>mdi-pencil</v-icon>
-          <v-icon @click="removeSubscriber(subscriber.id, index)">mdi-delete</v-icon>
+          <v-icon
+          	@click="openEditDialog(subscriber, index)"
+        	>mdi-pencil</v-icon>
+          <v-icon
+          	@click="removeSubscriber(subscriber.id, index)"
+        	>mdi-delete</v-icon>
         </v-list-item-icon>
       </v-list-item>
     </v-list>
@@ -38,6 +42,9 @@
   export default {
     props: ['subscribers'],
     methods: {
+    	openEditDialog(subscriber, index) {
+    		this.$emit('openEditDialog', {subscriber, index});
+    	},
     	removeSubscriber(id, index) {
     		axios.delete(`/api/subscribers/${id}`)
     			.then(this.$emit('removeSubscriber', index));

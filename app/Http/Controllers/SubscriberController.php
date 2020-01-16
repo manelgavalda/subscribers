@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Subscriber;
+use App\Rules\ActiveDomain;
 
 class SubscriberController extends Controller
 {
@@ -13,7 +14,16 @@ class SubscriberController extends Controller
 
     public function store()
     {
-        $this->validateRequest();
+        request()->validate([
+            'name' => 'required',
+            'email' => [
+                'bail',
+                'required',
+                'email',
+                'unique:subscribers',
+                new ActiveDomain
+            ]
+        ]);
 
     	$subscriber = Subscriber::create(request()->all());
 
@@ -26,7 +36,16 @@ class SubscriberController extends Controller
 
     public function update(Subscriber $subscriber)
     {
-        $this->validateRequest();
+        request()->validate([
+            'name' => 'required',
+            'email' => [
+                'bail',
+                'required',
+                'email',
+                "unique:subscribers,email,{$subscriber->id}",
+                new ActiveDomain
+            ]
+        ]);
 
     	$subscriber->update(request()->all());
 
@@ -40,25 +59,5 @@ class SubscriberController extends Controller
         $subscriber->fields()->delete();
 
         return response($subscriber, 204);
-    }
-
-    protected function validateRequest()
-    {
-        request()->validate([
-            'name' => 'required',
-            'email' => [
-                'bail',
-                'required',
-                'email',
-                'unique:subscribers',
-                function ($attribute, $value, $fail) {
-                    $domain = substr($value, strpos($value, '@') + 1);
-
-                    if (! checkdnsrr($domain, "A")) {
-                        $fail('The email domain must be active.');
-                    }
-                }
-            ]
-        ]);
     }
 }

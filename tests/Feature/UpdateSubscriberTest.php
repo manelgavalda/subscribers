@@ -30,13 +30,12 @@ class UpdateSubscriberTest extends TestCase
 
         $this->put("/api/subscribers/{$subscriber->id}", [
             'name' => 'Manel',
-            'email' => 'invalidemailformat'
+            'email' => 'e'
         ])->assertSessionHasErrors([
             'email' => 'The email must be a valid email address.'
         ]);
     }
 
-    // Internet connection for this
     /** @test */
     public function a_subscriber_email_domain_must_be_active_when_updating()
     {
@@ -48,6 +47,38 @@ class UpdateSubscriberTest extends TestCase
         ])->assertSessionHasErrors([
             'email' => 'The email domain must be active.'
         ]);
+    }
+
+    /** @test */
+    public function a_subscriber_email_must_be_unique_when_updating()
+    {
+        $subscriber = factory('App\Subscriber')->create([
+            'email' => 'manel@gmail.com'
+        ]);
+
+        $subscriberB = factory('App\Subscriber')->create([
+            'email' => 'manelB@gmail.com'
+        ]);
+
+        $this->put("/api/subscribers/{$subscriberB->id}", [
+            'email' => 'manel@gmail.com'
+        ])->assertSessionHasErrors([
+            'email' => 'The email has already been taken.'
+        ]);
+    }
+
+    /** @test */
+    public function a_subscriber_can_be_partially_updated()
+    {
+        $subscriber = factory('App\Subscriber')->create([
+            'name' => 'Manel',
+            'email' => 'manelgavalda@gmail.com'
+        ]);
+
+        $this->put("/api/subscribers/{$subscriber->id}", [
+            'name' => 'New Name',
+            'email' => 'manelgavalda@gmail.com'
+        ])->assertOk();
     }
 
     /** @test */
