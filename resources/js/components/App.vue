@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app>
     <v-navigation-drawer
       v-model="drawer"
       app
@@ -10,7 +10,7 @@
             <v-icon>mdi-home</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Home</v-list-item-title>
+            <v-list-item-title>Subscribers</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item link>
@@ -18,7 +18,7 @@
             <v-icon>mdi-contact-mail</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Contact</v-list-item-title>
+            <v-list-item-title>Fields</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -26,71 +26,43 @@
 
     <v-app-bar
       app
-      color="indigo"
+      color="#55A255"
       dark
     >
+      <v-toolbar-title><b>MailerLite</b></v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>Application</v-toolbar-title>
     </v-app-bar>
 
     <v-content>
+    	<v-container
+  			fluid
+			>
+			  <v-row align="center">
+			  	<v-col cols="9" sm="9">
+						Subscribers
+					</v-col>
+					<v-col cols="3" sm="3">
+		        <v-btn depressed color="primary">Create Subscriber</v-btn>
+	    		</v-col>
+
+				</v-row>
+			</v-container>
+
       <v-container
         class="fill-height"
         fluid
       >
-        <v-row
-          align="center"
-          justify="center"
-        >
-          <v-col class="text-center">
-            <v-tooltip left>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  :href="source"
-                  icon
-                  large
-                  target="_blank"
-                  v-on="on"
-                >
-                  <v-icon large>mdi-code-tags</v-icon>
-                </v-btn>
-              </template>
-              <span>Source</span>
-            </v-tooltip>
-
-            <v-tooltip right>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  large
-                  href="https://codepen.io/johnjleider/pen/zgxeLQ"
-                  target="_blank"
-                  v-on="on"
-                >
-                  <v-icon large>mdi-codepen</v-icon>
-                </v-btn>
-              </template>
-              <span>Codepen</span>
-            </v-tooltip>
-          </v-col>
-        </v-row>
+      	<subscribers-list></subscribers-list>
       </v-container>
     </v-content>
-    <v-footer
-      color="indigo"
-      app
-    >
-      <span class="white--text">&copy; 2019</span>
-    </v-footer>
   </v-app>
 </template>
 
 <script>
   export default {
-    props: {
-      source: String,
-    },
-
     data: () => ({
       drawer: null,
     }),

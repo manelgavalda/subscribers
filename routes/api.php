@@ -12,7 +12,7 @@
 */
 
 Route::resource('subscribers', 'SubscriberController')
-	->only(['store', 'update', 'destroy']);
+	->only(['index', 'store', 'update', 'destroy']);
 
 Route::resource('fields', 'FieldController')
 	->only(['store', 'update', 'destroy']);
