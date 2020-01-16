@@ -2125,6 +2125,11 @@ __webpack_require__.r(__webpack_exports__);
     createSubscriber: function createSubscriber(_ref) {
       var data = _ref.data;
       this.$emit('createSubscriber', data);
+      this.subscriber = {
+        name: '',
+        email: '',
+        state: 'unsubscribed'
+      };
       this.errors = [];
       this.saving = false;
       this.closeDialog();

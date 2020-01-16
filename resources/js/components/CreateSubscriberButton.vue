@@ -87,6 +87,12 @@
       createSubscriber({data}) {
         this.$emit('createSubscriber', data);
 
+        this.subscriber = {
+          name: '',
+          email: '',
+          state: 'unsubscribed'
+        };
+
         this.errors = [];
         this.saving = false;
 
