@@ -1997,6 +1997,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['subscribers', 'subscriberStates'],
   methods: {
@@ -2108,6 +2109,101 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['subscriberStates'],
+  data: function data() {
+    return {
+      errors: [],
+      saving: false,
+      editing: false,
+      activeIndex: null,
+      subscriber: {
+        name: '',
+        email: '',
+        state: 'unconfirmed',
+        fields: []
+      }
+    };
+  },
+  methods: {
+    createSubscriber: function createSubscriber() {
+      var _this = this;
+
+      this.saving = true;
+      axios.post('/api/subscribers', this.subscriber).then(this.addSubscriber)["catch"](this.showErrors).then(function () {
+        return _this.saving = false;
+      });
+    },
+    addSubscriber: function addSubscriber(_ref) {
+      var data = _ref.data;
+      this.resetForm();
+      data.fields = [];
+      this.$emit('addSubscriber', data);
+    },
+    editSubscriber: function editSubscriber(subscriber, index) {
+      this.editing = true;
+      this.activeIndex = index;
+      this.errors = [];
+      this.subscriber = _.clone(subscriber, true);
+    },
+    updateSubscriber: function updateSubscriber() {
+      var _this2 = this;
+
+      this.saving = true;
+      axios.put("/api/subscribers/".concat(this.subscriber.id), this.subscriber).then(function (_ref2) {
+        var data = _ref2.data;
+        return _this2.changeSubscriber(data, _this2.activeIndex);
+      })["catch"](this.showErrors).then(function () {
+        return _this2.saving = false;
+      });
+    },
+    changeSubscriber: function changeSubscriber(subscriber, index) {
+      this.finishEdit();
+      this.$emit('changeSubscriber', {
+        subscriber: subscriber,
+        index: index
+      });
+    },
+    showErrors: function showErrors(_ref3) {
+      var response = _ref3.response;
+      this.errors = response.data.errors;
+    },
+    resetForm: function resetForm() {
+      this.errors = [];
+      this.subscriber = {
+        name: '',
+        email: '',
+        state: 'unconfirmed',
+        fields: []
+      };
+      this.field = {
+        title: '',
+        type: 'string'
+      };
+    },
+    finishEdit: function finishEdit() {
+      this.editing = false;
+      this.resetForm();
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2178,116 +2274,74 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['subscriberStates'],
+  props: ['subscriberId', 'subscriberFields'],
   data: function data() {
     return {
-      errors: [],
-      saving: false,
-      editing: false,
-      activeIndex: null,
-      fieldUpdated: false,
-      subscriber: {
-        name: '',
-        email: '',
-        state: 'unconfirmed',
-        fields: []
-      },
+      snackbar: false,
+      fields: {},
       field: {
         title: '',
         type: 'string'
+      },
+      notification: {
+        color: 'green',
+        text: 'Field updated correctly',
+        status: false
       }
     };
   },
+  mounted: function mounted() {
+    this.fields = this.subscriberFields;
+  },
   methods: {
-    createSubscriber: function createSubscriber() {
+    createField: function createField(field) {
       var _this = this;
 
       this.saving = true;
-      axios.post('/api/subscribers', this.subscriber).then(this.addSubscriber)["catch"](this.showErrors).then(function () {
+      field.subscriber_id = this.subscriberId;
+      axios.post('/api/fields', field).then(this.addField)["catch"](this.showErrors).then(function () {
         return _this.saving = false;
       });
     },
-    addSubscriber: function addSubscriber(_ref) {
+    addField: function addField(_ref) {
       var data = _ref.data;
-      this.resetForm();
-      data.fields = [];
-      this.$emit('addSubscriber', data);
+      this.saving = false;
+      this.notification = {
+        color: 'green',
+        text: 'Success',
+        status: true
+      };
+      this.field = {
+        title: '',
+        type: 'string'
+      };
+      this.fields.push(data);
     },
-    editSubscriber: function editSubscriber(subscriber, index) {
-      this.editing = true;
-      this.activeIndex = index;
-      this.errors = [];
-      this.subscriber = _.clone(subscriber, true);
-    },
-    updateSubscriber: function updateSubscriber() {
+    updateField: function updateField(field) {
       var _this2 = this;
 
       this.saving = true;
-      axios.put("/api/subscribers/".concat(this.subscriber.id), this.subscriber).then(function (_ref2) {
-        var data = _ref2.data;
-        return _this2.changeSubscriber(data, _this2.activeIndex);
-      })["catch"](this.showErrors).then(function () {
+      axios.put("/api/fields/".concat(field.id), field).then(this.changeField)["catch"](this.showErrors).then(function () {
         return _this2.saving = false;
       });
     },
-    changeSubscriber: function changeSubscriber(subscriber, index) {
-      this.finishEdit();
-      this.$emit('changeSubscriber', {
-        subscriber: subscriber,
-        index: index
-      });
-    },
-    showErrors: function showErrors(data) {
-      this.errors = data.response.data.errors;
-    },
-    resetForm: function resetForm() {
-      this.errors = [];
-      this.subscriber = {
-        name: '',
-        email: '',
-        state: 'unconfirmed',
-        fields: []
+    changeField: function changeField() {
+      this.fieldUpdated = true;
+      this.notification = {
+        color: 'green',
+        text: 'Success',
+        status: true
       };
-      this.field = {
-        title: '',
-        type: 'string'
-      };
-    },
-    finishEdit: function finishEdit() {
-      this.editing = false;
-      this.resetForm();
-    },
-    createField: function createField(field) {
-      var _this3 = this;
-
-      this.saving = true;
-      field.subscriber_id = this.subscriber.id;
-      axios.post('/api/fields', field).then(this.addField)["catch"](this.showErrors).then(function () {
-        return _this3.saving = false;
-      });
-    },
-    addField: function addField(_ref3) {
-      var data = _ref3.data;
-      this.saving = false;
-      this.errors = [];
-      this.field = {
-        title: '',
-        type: 'string'
-      };
-      this.subscriber.fields.push(data);
-    },
-    updateField: function updateField(field) {
-      var _this4 = this;
-
-      this.saving = true;
-      axios.put("/api/fields/".concat(field.id), field).then(function () {
-        return _this4.fieldUpdated = true;
-      })["catch"](this.showErrors).then(function () {
-        return _this4.saving = false;
-      });
     },
     deleteField: function deleteField(id, index) {
-      axios["delete"]("/api/fields/".concat(id)).then(this.subscriber.fields.splice(index, 1));
+      axios["delete"]("/api/fields/".concat(id)).then(this.fields.splice(index, 1));
+    },
+    showErrors: function showErrors(data) {
+      this.notification = {
+        color: 'red',
+        text: 'Error',
+        status: true
+      };
     }
   },
   filters: {
@@ -20718,90 +20772,91 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "v-container",
+    "v-card",
+    { staticClass: "mx-auto mt30", staticStyle: { "overflow-y": "auto" } },
     [
       _c(
-        "v-card",
-        { staticClass: "mx-auto mt30", attrs: { "max-width": "1000" } },
-        [
-          _c(
-            "v-toolbar",
-            { attrs: { color: "#55A256", dark: "" } },
-            [_c("v-toolbar-title", [_vm._v("Subscribers")])],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-list",
-            { attrs: { subheader: "" } },
-            _vm._l(_vm.subscribers, function(subscriber, index) {
-              return _c(
-                "v-list-item",
-                { key: index },
+        "v-toolbar",
+        { attrs: { color: "#55A256", dark: "" } },
+        [_c("v-toolbar-title", [_vm._v("Subscribers")])],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-list",
+        { attrs: { subheader: "" } },
+        _vm._l(_vm.subscribers, function(subscriber, index) {
+          return _c(
+            "v-list-item",
+            { key: index },
+            [
+              _c(
+                "v-list-item-content",
+                [
+                  _c("v-list-item-title", {
+                    domProps: { textContent: _vm._s(subscriber.name) }
+                  }),
+                  _vm._v(" "),
+                  _c("v-list-item-subtitle", {
+                    domProps: { textContent: _vm._s(subscriber.email) }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-list-item-content",
                 [
                   _c(
-                    "v-list-item-content",
-                    [
-                      _c("v-list-item-title", {
-                        domProps: { textContent: _vm._s(subscriber.name) }
-                      }),
-                      _vm._v(" "),
-                      _c("v-list-item-subtitle", {
-                        domProps: { textContent: _vm._s(subscriber.email) }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-list-item-content",
+                    "v-col",
                     [
                       _c("v-chip", {
                         attrs: {
+                          dark: "",
                           color: _vm.subscriberStates[subscriber.state]
                         },
                         domProps: { textContent: _vm._s(subscriber.state) }
                       })
                     ],
                     1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-list-item-icon",
+                [
+                  _c(
+                    "v-icon",
+                    {
+                      on: {
+                        click: function($event) {
+                          return _vm.editSubscriber(subscriber, index)
+                        }
+                      }
+                    },
+                    [_vm._v("mdi-pencil")]
                   ),
                   _vm._v(" "),
                   _c(
-                    "v-list-item-icon",
-                    [
-                      _c(
-                        "v-icon",
-                        {
-                          on: {
-                            click: function($event) {
-                              return _vm.editSubscriber(subscriber, index)
-                            }
-                          }
-                        },
-                        [_vm._v("mdi-pencil")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-icon",
-                        {
-                          on: {
-                            click: function($event) {
-                              return _vm.removeSubscriber(subscriber.id, index)
-                            }
-                          }
-                        },
-                        [_vm._v("mdi-delete")]
-                      )
-                    ],
-                    1
+                    "v-icon",
+                    {
+                      on: {
+                        click: function($event) {
+                          return _vm.removeSubscriber(subscriber.id, index)
+                        }
+                      }
+                    },
+                    [_vm._v("mdi-delete")]
                   )
                 ],
                 1
               )
-            }),
+            ],
             1
           )
-        ],
+        }),
         1
       )
     ],
@@ -20835,12 +20890,17 @@ var render = function() {
     [
       _c(
         "v-card",
-        { staticClass: "mx-auto", attrs: { "max-width": "1000" } },
+        { staticClass: "mx-auto", attrs: { "max-width": "600" } },
         [
           _c("v-card-title", [
-            _c("span", { staticClass: "headline" }, [
-              _vm._v("Subscriber Profile")
-            ])
+            _c("span", {
+              staticClass: "headline",
+              domProps: {
+                textContent: _vm._s(
+                  (_vm.editing ? "Editing" : "New") + " Subscriber"
+                )
+              }
+            })
           ]),
           _vm._v(" "),
           _c(
@@ -20983,166 +21043,192 @@ var render = function() {
       ),
       _vm._v(" "),
       _vm.editing
-        ? _c(
-            "v-card",
-            { staticClass: "mx-auto mt30", attrs: { "max-width": "1000" } },
+        ? _c("subscriber-profile-additional-fields", {
+            key: _vm.subscriber.id,
+            attrs: {
+              "subscriber-id": _vm.subscriber.id,
+              "subscriber-fields": _vm.subscriber.fields
+            }
+          })
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=template&id=dc22f2b4&":
+/*!************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=template&id=dc22f2b4& ***!
+  \************************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-card",
+    { staticClass: "mx-auto mt30", attrs: { "max-width": "600" } },
+    [
+      _c("v-card-title", [_c("span", [_vm._v("Additional Fields")])]),
+      _vm._v(" "),
+      _c(
+        "v-card-text",
+        [
+          _c(
+            "v-container",
             [
-              _c("v-card-title", [_c("span", [_vm._v("Additional Fields")])]),
-              _vm._v(" "),
               _c(
-                "v-card-text",
+                "v-row",
                 [
                   _c(
-                    "v-container",
+                    "v-col",
+                    { attrs: { cols: "6" } },
                     [
-                      _c(
-                        "v-row",
-                        [
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "6" } },
-                            [
-                              _c("v-text-field", {
-                                attrs: {
-                                  filled: "",
-                                  required: "",
-                                  type: "string",
-                                  label: "New Field"
-                                },
-                                model: {
-                                  value: _vm.field.title,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.field, "title", $$v)
-                                  },
-                                  expression: "field.title"
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("errors", {
-                                attrs: { errors: _vm.errors.title }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "6" } },
-                            [
-                              _c("v-select", {
-                                attrs: {
-                                  filled: "",
-                                  required: "",
-                                  label: "Type",
-                                  "append-outer-icon": "mdi-plus",
-                                  items: ["date", "number", "string", "boolean"]
-                                },
-                                on: {
-                                  "click:append-outer": function($event) {
-                                    return _vm.createField(_vm.field)
-                                  }
-                                },
-                                model: {
-                                  value: _vm.field.type,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.field, "type", $$v)
-                                  },
-                                  expression: "field.type"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _vm._l(_vm.subscriber.fields, function(field, index) {
-                            return _c(
-                              "v-col",
-                              { key: index, attrs: { cols: "12" } },
+                      _c("v-text-field", {
+                        attrs: {
+                          filled: "",
+                          required: "",
+                          type: "string",
+                          label: "New Field"
+                        },
+                        model: {
+                          value: _vm.field.title,
+                          callback: function($$v) {
+                            _vm.$set(_vm.field, "title", $$v)
+                          },
+                          expression: "field.title"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-col",
+                    { attrs: { cols: "6" } },
+                    [
+                      _c("v-select", {
+                        attrs: {
+                          filled: "",
+                          required: "",
+                          label: "Type",
+                          "append-outer-icon": "mdi-plus",
+                          items: ["date", "number", "string", "boolean"]
+                        },
+                        on: {
+                          "click:append-outer": function($event) {
+                            return _vm.createField(_vm.field)
+                          }
+                        },
+                        model: {
+                          value: _vm.field.type,
+                          callback: function($$v) {
+                            _vm.$set(_vm.field, "type", $$v)
+                          },
+                          expression: "field.type"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.fields, function(field, index) {
+                    return _c(
+                      "v-col",
+                      { key: index, attrs: { cols: "12" } },
+                      [
+                        _c(
+                          "v-card",
+                          [
+                            _c(
+                              "v-row",
+                              { attrs: { "center-content": "" } },
                               [
                                 _c(
-                                  "v-row",
-                                  { attrs: { "center-content": "" } },
+                                  "v-col",
+                                  { attrs: { cols: "10" } },
+                                  [
+                                    field.type == "boolean"
+                                      ? _c("v-checkbox", {
+                                          staticClass: "mx-2",
+                                          attrs: { label: field.title },
+                                          model: {
+                                            value: field.value,
+                                            callback: function($$v) {
+                                              _vm.$set(field, "value", $$v)
+                                            },
+                                            expression: "field.value"
+                                          }
+                                        })
+                                      : _c("v-text-field", {
+                                          attrs: {
+                                            required: "",
+                                            type: field.type,
+                                            label: _vm._f("capitalize")(
+                                              field.title
+                                            )
+                                          },
+                                          model: {
+                                            value: field.value,
+                                            callback: function($$v) {
+                                              _vm.$set(field, "value", $$v)
+                                            },
+                                            expression: "field.value"
+                                          }
+                                        })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-col",
+                                  { attrs: { cols: "2" } },
                                   [
                                     _c(
-                                      "v-col",
-                                      { attrs: { cols: "10" } },
+                                      "v-icon",
+                                      {
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.updateField(field, index)
+                                          }
+                                        }
+                                      },
                                       [
-                                        field.type == "boolean"
-                                          ? _c("v-checkbox", {
-                                              staticClass: "mx-2",
-                                              attrs: { label: field.title },
-                                              model: {
-                                                value: field.value,
-                                                callback: function($$v) {
-                                                  _vm.$set(field, "value", $$v)
-                                                },
-                                                expression: "field.value"
-                                              }
-                                            })
-                                          : _c("v-text-field", {
-                                              attrs: {
-                                                filled: "",
-                                                required: "",
-                                                type: field.type,
-                                                label: _vm._f("capitalize")(
-                                                  field.title
-                                                )
-                                              },
-                                              model: {
-                                                value: field.value,
-                                                callback: function($$v) {
-                                                  _vm.$set(field, "value", $$v)
-                                                },
-                                                expression: "field.value"
-                                              }
-                                            })
-                                      ],
-                                      1
+                                        _vm._v(
+                                          "\n\t          \t\t\t\tmdi-content-save\n\t          \t\t\t"
+                                        )
+                                      ]
                                     ),
                                     _vm._v(" "),
                                     _c(
-                                      "v-col",
-                                      { attrs: { cols: "2" } },
+                                      "v-icon",
+                                      {
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.deleteField(
+                                              field.id,
+                                              index
+                                            )
+                                          }
+                                        }
+                                      },
                                       [
-                                        _c(
-                                          "v-icon",
-                                          {
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.updateField(
-                                                  field,
-                                                  index
-                                                )
-                                              }
-                                            }
-                                          },
-                                          [
-                                            _vm._v(
-                                              "\n\t          \t\t\t\tmdi-content-save\n\t          \t\t\t"
-                                            )
-                                          ]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "v-icon",
-                                          {
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.deleteField(
-                                                  field.id,
-                                                  index
-                                                )
-                                              }
-                                            }
-                                          },
-                                          [
-                                            _vm._v(
-                                              "\n\t          \t\t\t\tmdi-delete\n\t          \t\t\t"
-                                            )
-                                          ]
+                                        _vm._v(
+                                          "\n\t          \t\t\t\tmdi-delete\n\t          \t\t\t"
                                         )
-                                      ],
-                                      1
+                                      ]
                                     )
                                   ],
                                   1
@@ -21150,35 +21236,37 @@ var render = function() {
                               ],
                               1
                             )
-                          })
-                        ],
-                        2
-                      )
-                    ],
-                    1
-                  )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  })
                 ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-snackbar",
-                {
-                  attrs: { color: "green", timeout: 1500 },
-                  model: {
-                    value: _vm.fieldUpdated,
-                    callback: function($$v) {
-                      _vm.fieldUpdated = $$v
-                    },
-                    expression: "fieldUpdated"
-                  }
-                },
-                [_vm._v("\n\t    \tField Updated\n\t    ")]
+                2
               )
             ],
             1
           )
-        : _vm._e()
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-snackbar",
+        {
+          attrs: { color: _vm.notification.color, timeout: 1500 },
+          model: {
+            value: _vm.notification.status,
+            callback: function($$v) {
+              _vm.$set(_vm.notification, "status", $$v)
+            },
+            expression: "notification.status"
+          }
+        },
+        [_vm._v(_vm._s(_vm.notification.text))]
+      )
     ],
     1
   )
@@ -74505,6 +74593,7 @@ var map = {
 	"./components/Errors.vue": "./resources/js/components/Errors.vue",
 	"./components/SubscriberList.vue": "./resources/js/components/SubscriberList.vue",
 	"./components/SubscriberProfile.vue": "./resources/js/components/SubscriberProfile.vue",
+	"./components/SubscriberProfileAdditionalFields.vue": "./resources/js/components/SubscriberProfileAdditionalFields.vue",
 	"./components/Subscribers.vue": "./resources/js/components/Subscribers.vue"
 };
 
@@ -74860,6 +74949,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberProfile_vue_vue_type_template_id_5d4de4c6___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberProfile_vue_vue_type_template_id_5d4de4c6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/SubscriberProfileAdditionalFields.vue":
+/*!***********************************************************************!*\
+  !*** ./resources/js/components/SubscriberProfileAdditionalFields.vue ***!
+  \***********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _SubscriberProfileAdditionalFields_vue_vue_type_template_id_dc22f2b4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SubscriberProfileAdditionalFields.vue?vue&type=template&id=dc22f2b4& */ "./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=template&id=dc22f2b4&");
+/* harmony import */ var _SubscriberProfileAdditionalFields_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SubscriberProfileAdditionalFields.vue?vue&type=script&lang=js& */ "./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _SubscriberProfileAdditionalFields_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _SubscriberProfileAdditionalFields_vue_vue_type_template_id_dc22f2b4___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _SubscriberProfileAdditionalFields_vue_vue_type_template_id_dc22f2b4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/SubscriberProfileAdditionalFields.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************!*\
+  !*** ./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberProfileAdditionalFields_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./SubscriberProfileAdditionalFields.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberProfileAdditionalFields_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=template&id=dc22f2b4&":
+/*!******************************************************************************************************!*\
+  !*** ./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=template&id=dc22f2b4& ***!
+  \******************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberProfileAdditionalFields_vue_vue_type_template_id_dc22f2b4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./SubscriberProfileAdditionalFields.vue?vue&type=template&id=dc22f2b4& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/SubscriberProfileAdditionalFields.vue?vue&type=template&id=dc22f2b4&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberProfileAdditionalFields_vue_vue_type_template_id_dc22f2b4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SubscriberProfileAdditionalFields_vue_vue_type_template_id_dc22f2b4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

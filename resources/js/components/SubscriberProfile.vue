@@ -2,10 +2,13 @@
 	<v-container>
 		<v-card
       class="mx-auto"
-      max-width="1000"
+      max-width="600"
     >
       <v-card-title>
-        <span class="headline">Subscriber Profile</span>
+        <span
+        	class="headline"
+        	v-text="(editing ? 'Editing' : 'New') +  ' Subscriber'">
+      	</span>
       </v-card-title>
       <v-card-text>
         <v-container>
@@ -68,84 +71,12 @@
         >Update</v-btn>
       </v-card-actions>
     </v-card>
-
-    <v-card
-      class="mx-auto mt30"
-      max-width="1000"
-      v-if="editing"
-    >
-      <v-card-title>
-        <span>Additional Fields</span>
-      </v-card-title>
-      <v-card-text>
-        <v-container>
-          <v-row>
-            <v-col cols="6">
-              <v-text-field
-                filled
-                required
-                type="string"
-                label="New Field"
-                v-model="field.title"
-              ></v-text-field>
-              <errors
-                :errors="errors.title"
-              ></errors>
-            </v-col>
-            <v-col cols="6">
-              <v-select
-                filled
-                required
-                label="Type"
-                append-outer-icon="mdi-plus"
-                v-model="field.type"
-                :items="['date', 'number', 'string', 'boolean']"
-                @click:append-outer="createField(field)"
-              ></v-select>
-            </v-col>
-            <v-col
-              cols="12"
-              v-for="(field, index) in subscriber.fields"
-              :key="index"
-            >
-            	<v-row center-content>
-            		<v-col cols="10">
-		              <v-checkbox
-		              	v-if="field.type == 'boolean'"
-		              	class="mx-2"
-		              	:label="field.title"
-		              	v-model="field.value"
-		            	></v-checkbox>
-		              <v-text-field
-		                filled
-		                required
-		                :type="field.type"
-		                :label="field.title | capitalize"
-		                v-else
-		                v-model="field.value"
-		              ></v-text-field>
-		            </v-col>
-		            <v-col cols="2">
-	          			<v-icon @click="updateField(field, index)">
-	          				mdi-content-save
-	          			</v-icon>
-	            		<v-icon @click="deleteField(field.id, index)">
-	          				mdi-delete
-	          			</v-icon>
-	          		</v-col>
-            	</v-row>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
-      <v-snackbar
-	      color="green"
-	      :timeout="1500"
-	      v-model="fieldUpdated"
-	    >
-	    	Field Updated
-	    </v-snackbar>
-    </v-card>
+    <subscriber-profile-additional-fields
+    	v-if="editing"
+    	:key="subscriber.id"
+    	:subscriber-id="subscriber.id"
+    	:subscriber-fields="subscriber.fields"
+    ></subscriber-profile-additional-fields>
 	</v-container>
 </template>
 <script>
@@ -156,16 +87,11 @@
       saving: false,
       editing: false,
       activeIndex: null,
-      fieldUpdated: false,
       subscriber: {
         name: '',
         email: '',
         state: 'unconfirmed',
         fields: []
-      },
-      field: {
-        title: '',
-        type: 'string'
       }
 		}),
 		methods: {
@@ -206,8 +132,8 @@
 
         this.$emit('changeSubscriber', {subscriber, index})
       },
-      showErrors(data) {
-        this.errors = data.response.data.errors
+      showErrors({response}) {
+        this.errors = response.data.errors
       },
       resetForm() {
         this.errors = []
@@ -228,44 +154,7 @@
         this.editing = false
 
         this.resetForm()
-      },
-      createField(field) {
-        this.saving = true
-
-        field.subscriber_id = this.subscriber.id
-
-        axios.post('/api/fields', field)
-          .then(this.addField)
-          .catch(this.showErrors)
-          .then(() => this.saving = false)
-      },
-      addField({data}) {
-        this.saving = false
-
-        this.errors = []
-
-        this.field = {
-          title: '',
-          type: 'string'
-        }
-
-        this.subscriber.fields.push(data)
-      },
-      updateField(field) {
-        this.saving = true
-
-        axios.put(`/api/fields/${field.id}`, field)
-          .then(() => this.fieldUpdated = true)
-          .catch(this.showErrors)
-          .then(() => this.saving = false)
-      },
-      deleteField(id, index) {
-        axios.delete(`/api/fields/${id}`)
-          .then(this.subscriber.fields.splice(index, 1))
       }
-		},
-    filters: {
-      capitalize: text => text.charAt(0).toUpperCase() + text.slice(1)
-    }
+		}
 	}
 </script>
