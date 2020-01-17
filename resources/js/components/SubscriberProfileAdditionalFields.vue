@@ -1,19 +1,19 @@
 <template>
   <v-card
-    class="mx-auto mt30"
-    max-width="600"
+    class="mx-auto mt10"
+    max-width="595"
   >
-    <v-card-title>
-      <span>Additional Fields</span>
-    </v-card-title>
+    <v-toolbar color="#55A256" dark>
+      <v-toolbar-title>Additional Fields</v-toolbar-title>
+    </v-toolbar>
     <v-card-text>
       <v-container>
         <v-row>
           <v-col cols="6">
             <v-text-field
               filled
+              shaped
               required
-              type="string"
               label="New Field"
               v-model="field.title"
             ></v-text-field>
@@ -21,47 +21,54 @@
           <v-col cols="6">
             <v-select
               filled
+              shaped
               required
               label="Type"
               append-outer-icon="mdi-plus"
-              v-model="field.type"
               :items="['date', 'number', 'string', 'boolean']"
+              v-model="field.type"
               @click:append-outer="createField(field)"
             ></v-select>
           </v-col>
-          <v-col
-            cols="12"
-            v-for="(field, index) in fields"
-            :key="index"
-          >
-          	<v-card>
-            	<v-row center-content>
-            		<v-col cols="10">
-		              <v-checkbox
-		              	v-if="field.type == 'boolean'"
-		              	class="mx-2"
-		              	:label="field.title"
-		              	v-model="field.value"
-		            	></v-checkbox>
-		              <v-text-field
-		                required
-		                :type="field.type"
-		                :label="field.title | capitalize"
-		                v-else
-		                v-model="field.value"
-		              ></v-text-field>
-		            </v-col>
-		            <v-col cols="2">
-	          			<v-icon @click="updateField(field, index)">
-	          				mdi-content-save
-	          			</v-icon>
-	            		<v-icon @click="deleteField(field.id, index)">
-	          				mdi-delete
-	          			</v-icon>
-	          		</v-col>
-          		</v-row>
-          	</v-card>
-          </v-col>
+          <v-row>
+            <v-col
+              cols="12"
+              v-for="(field, index) in fields"
+              :key="index"
+            >
+            	<v-card>
+              	<v-row>
+              		<v-col cols="10">
+  		              <v-checkbox
+                      outlined
+                      class="mx-5"
+  		              	:label="field.title"
+  		              	v-if="field.type == 'boolean'"
+  		              	v-model.number="field.value"
+  		            	></v-checkbox>
+  		              <v-text-field
+                      shaped
+                      outlined
+  		                required
+                      class="mx-5"
+  		                :type="field.type"
+  		                :label="field.title | capitalize"
+  		                v-else
+  		                v-model="field.value"
+  		              ></v-text-field>
+  		            </v-col>
+  		            <v-col cols="2">
+  	          			<v-icon @click="updateField(field, index)">
+  	          				mdi-content-save
+  	          			</v-icon>
+  	            		<v-icon @click="deleteField(field.id, index)">
+  	          				mdi-delete
+  	          			</v-icon>
+  	          		</v-col>
+            		</v-row>
+            	</v-card>
+            </v-col>
+          </v-row>
         </v-row>
       </v-container>
     </v-card-text>
@@ -76,16 +83,12 @@
 	export default {
 		props: ['subscriberId', 'subscriberFields'],
 		data: () => ({
-			snackbar: false,
-			fields: {},
+			fields: [],
+      notification: {},
       field: {
         title: '',
-        type: 'string'
-      },
-      notification: {
-      	color: 'green',
-      	text: 'Field updated correctly',
-      	status: false
+        type: 'string',
+        subscriber_id: null
       }
 		}),
 		mounted() {
@@ -99,17 +102,13 @@
 
         axios.post('/api/fields', field)
           .then(this.addField)
-          .catch(this.showErrors)
-          .then(() => this.saving = false)
+          .catch(this.showErrorNotification)
+          .then(this.saving = false)
       },
       addField({data}) {
         this.saving = false
 
-        this.notification = {
-        	color: 'green',
-        	text: 'Success',
-        	status: true
-        }
+        this.sendNotification('green', 'success')
 
         this.field = {
           title: '',
@@ -123,32 +122,36 @@
 
         axios.put(`/api/fields/${field.id}`, field)
           .then(this.changeField)
-          .catch(this.showErrors)
-          .then(() => this.saving = false)
+          .catch(this.showErrorNotification)
+          .then(this.saving = false)
       },
       changeField() {
       	this.fieldUpdated = true
 
-        this.notification = {
-        	color: 'green',
-        	text: 'Success',
-        	status: true
-        }
+        this.sendNotification('green', 'success')
       },
       deleteField(id, index) {
         axios.delete(`/api/fields/${id}`)
           .then(this.fields.splice(index, 1))
       },
-      showErrors(data) {
-      	this.notification = {
-      		color: 'red',
-      		text: 'Error',
-        	status: true
-      	}
+      showErrorNotification() {
+        this.sendNotification('red', 'Error')
       },
+      sendNotification(color, text) {
+        this.notification = {
+          color,
+          text,
+          status: true
+        }
+      }
 		},
     filters: {
       capitalize: text => text.charAt(0).toUpperCase() + text.slice(1)
     }
 	}
 </script>
+<style>
+  .mt10 {
+    margin-top: 10px
+  }
+</style>

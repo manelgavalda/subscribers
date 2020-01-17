@@ -19,6 +19,7 @@ class CreateFieldsTable extends Migration
             $table->enum('type', ['date', 'number', 'string', 'boolean']);
             $table->string('value')->nullable();
             $table->unsignedInteger('subscriber_id');
+            $table->unique(['subscriber_id', 'title']);
             $table->timestamps();
         });
     }

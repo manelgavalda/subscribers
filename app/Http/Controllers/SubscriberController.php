@@ -9,7 +9,7 @@ class SubscriberController extends Controller
 {
     public function index()
     {
-        return Subscriber::with('fields')->get();
+        return Subscriber::all();
     }
 
     public function store()
@@ -41,9 +41,7 @@ class SubscriberController extends Controller
             ]
         ]);
 
-    	return tap(
-            $subscriber->load('fields')
-        )->update(request()->all());
+    	return tap($subscriber)->update(request()->all());
     }
 
     public function destroy(Subscriber $subscriber)

@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class AddFieldTest extends TestCase
 {
@@ -21,6 +22,24 @@ class AddFieldTest extends TestCase
             'type' => 'The type field is required.',
             'subscriber_id' => 'The subscriber id field is required.'
         ]);
+    }
+
+    /** @test */
+    public function a_field_cannot_be_repeated_for_a_subscriber()
+    {
+        $this->withoutExceptionHandling();
+
+        $attributes = [
+            'title' => 'generic',
+            'type' => 'string',
+            'subscriber_id' => 1
+        ];
+
+        factory('App\Field')->create($attributes);
+
+        $this->ExpectException(QueryException::class);
+
+        $this->post('/api/fields', $attributes);
     }
 
     /** @test */

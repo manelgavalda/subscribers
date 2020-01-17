@@ -28,4 +28,19 @@ class GetSubscribersTest extends TestCase
     		])
     		->assertSee($subscribers->first()->fields->first());
     }
+
+
+    /** @test */
+    public function boolean_fields_that_are_retrieved_via_a_subscriber_are_correctly_casted()
+    {
+        $field = factory('App\Field')->create([
+            'type' => 'boolean',
+            'value' => 0
+        ]);
+
+        $this->get('api/subscribers')
+            ->assertJsonFragment([
+                'value' => false,
+            ]);
+    }
 }

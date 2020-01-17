@@ -1,51 +1,54 @@
 <template>
 	<v-container>
-		<v-card
-      class="mx-auto"
-      max-width="600"
-    >
-      <v-card-title>
-        <span
-        	class="headline"
-        	v-text="(editing ? 'Editing' : 'New') +  ' Subscriber'">
-      	</span>
-      </v-card-title>
+		<v-card class="mx-auto" max-width="600" heigth="100px">
+      <v-toolbar color="#55A256" dark>
+        <v-toolbar-title
+          v-text="(editing ? 'Editing' : 'New') +  ' Subscriber'"
+        ></v-toolbar-title>
+      </v-toolbar>
       <v-card-text>
-        <v-container>
-          <v-row>
-            <v-col cols="12">
+        <v-content>
+          <v-col>
+            <v-row>
               <v-text-field
                 filled
+                outlined
                 required
                 label="Name*"
                 v-model="subscriber.name"
               ></v-text-field>
+            </v-row>
+            <v-row>
               <errors
                 :errors="errors.name"
               ></errors>
-            </v-col>
-            <v-col cols="12">
+            </v-row>
+            <v-row>
               <v-text-field
                 filled
+                outlined
                 required
                 label="Email*"
                 v-model="subscriber.email"
               ></v-text-field>
+            </v-row>
+            <v-row>
               <errors
                 :errors="errors.email"
               ></errors>
-            </v-col>
-            <v-col cols="12">
+            </v-row>
+            <v-row>
               <v-select
                 filled
+                outlined
                 required
                 label="State*"
                 v-model="subscriber.state"
                 :items="Object.keys(subscriberStates)"
               ></v-select>
-            </v-col>
-          </v-row>
-        </v-container>
+            </v-row>
+          </v-col>
+        </v-content>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -58,16 +61,16 @@
         <v-btn
           text
           color="#55A255"
+          :disabled="saving"
           v-if="! editing"
           @click="createSubscriber"
-          :disabled="saving"
         >Create</v-btn>
         <v-btn
           text
-          color="#55A255"
+          color=#55A255
+          :disabled="saving"
           v-else
           @click="updateSubscriber"
-          :disabled="saving"
         >Update</v-btn>
       </v-card-actions>
     </v-card>
@@ -101,7 +104,7 @@
         axios.post('/api/subscribers', this.subscriber)
           .then(this.addSubscriber)
           .catch(this.showErrors)
-          .then(() => this.saving = false)
+          .then(this.saving = false)
       },
       addSubscriber({data}) {
         this.resetForm()
@@ -125,7 +128,7 @@
         axios.put(`/api/subscribers/${this.subscriber.id}`, this.subscriber)
           .then(({data}) => this.changeSubscriber(data, this.activeIndex))
           .catch(this.showErrors)
-          .then(() => this.saving = false)
+          .then(this.saving = false)
       },
       changeSubscriber(subscriber, index) {
         this.finishEdit()
@@ -134,6 +137,11 @@
       },
       showErrors({response}) {
         this.errors = response.data.errors
+      },
+      finishEdit() {
+        this.editing = false
+
+        this.resetForm()
       },
       resetForm() {
         this.errors = []
@@ -144,16 +152,6 @@
           state: 'unconfirmed',
           fields: []
         }
-
-        this.field = {
-          title: '',
-          type: 'string'
-        }
-      },
-      finishEdit() {
-        this.editing = false
-
-        this.resetForm()
       }
 		}
 	}
