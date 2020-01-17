@@ -13,7 +13,7 @@
 	}
 </script>
 <style>
-  .red-text {
-    color: red;
-  }
+    .red-text {
+        color: red;
+    }
 </style>

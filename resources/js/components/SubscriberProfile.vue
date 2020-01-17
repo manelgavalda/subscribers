@@ -1,158 +1,158 @@
 <template>
 	<v-container>
 		<v-card class="mx-auto" max-width="600" heigth="100px">
-      <v-toolbar color="#55A256" dark>
-        <v-toolbar-title
-          v-text="(editing ? 'Editing' : 'New') +  ' Subscriber'"
-        ></v-toolbar-title>
-      </v-toolbar>
-      <v-card-text>
-        <v-content>
-          <v-col>
-            <v-row>
-              <v-text-field
-                filled
-                outlined
-                required
-                label="Name*"
-                v-model="subscriber.name"
-              ></v-text-field>
-            </v-row>
-            <v-row>
-              <errors
-                :errors="errors.name"
-              ></errors>
-            </v-row>
-            <v-row>
-              <v-text-field
-                filled
-                outlined
-                required
-                label="Email*"
-                v-model="subscriber.email"
-              ></v-text-field>
-            </v-row>
-            <v-row>
-              <errors
-                :errors="errors.email"
-              ></errors>
-            </v-row>
-            <v-row>
-              <v-select
-                filled
-                outlined
-                required
-                label="State*"
-                v-model="subscriber.state"
-                :items="Object.keys(subscriberStates)"
-              ></v-select>
-            </v-row>
-          </v-col>
-        </v-content>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn
-          text
-          color="blue darken-1"
-          v-show="editing"
-          @click="finishEdit"
-        >Cancel</v-btn>
-        <v-btn
-          text
-          color="#55A255"
-          :disabled="saving"
-          v-if="! editing"
-          @click="createSubscriber"
-        >Create</v-btn>
-        <v-btn
-          text
-          color=#55A255
-          :disabled="saving"
-          v-else
-          @click="updateSubscriber"
-        >Update</v-btn>
-      </v-card-actions>
-    </v-card>
-    <subscriber-profile-additional-fields
-    	v-if="editing"
-    	:key="subscriber.id"
-    	:subscriber-id="subscriber.id"
-    	:subscriber-fields="subscriber.fields"
-    ></subscriber-profile-additional-fields>
+			<v-toolbar color="#55A256" dark>
+				<v-toolbar-title
+					v-text="(editing ? 'Editing' : 'New') +  ' Subscriber'"
+				></v-toolbar-title>
+			</v-toolbar>
+			<v-card-text>
+				<v-content>
+					<v-col>
+						<v-row>
+							<v-text-field
+								filled
+								outlined
+								required
+								label="Name*"
+								v-model="subscriber.name"
+							></v-text-field>
+						</v-row>
+						<v-row>
+							<errors
+								:errors="errors.name"
+							></errors>
+						</v-row>
+						<v-row>
+							<v-text-field
+								filled
+								outlined
+								required
+								label="Email*"
+								v-model="subscriber.email"
+							></v-text-field>
+						</v-row>
+						<v-row>
+							<errors
+								:errors="errors.email"
+							></errors>
+						</v-row>
+						<v-row>
+							<v-select
+								filled
+								outlined
+								required
+								label="State*"
+								v-model="subscriber.state"
+								:items="Object.keys(subscriberStates)"
+							></v-select>
+						</v-row>
+					</v-col>
+				</v-content>
+			</v-card-text>
+			<v-card-actions>
+				<v-spacer></v-spacer>
+				<v-btn
+					text
+					color="blue darken-1"
+					v-show="editing"
+					@click="finishEdit"
+				>Cancel</v-btn>
+				<v-btn
+					text
+					color="#55A255"
+					:disabled="saving"
+					v-if="! editing"
+					@click="createSubscriber"
+				>Create</v-btn>
+				<v-btn
+					text
+					color=#55A255
+					:disabled="saving"
+					v-else
+					@click="updateSubscriber"
+				>Update</v-btn>
+			</v-card-actions>
+		</v-card>
+		<subscriber-profile-additional-fields
+			v-if="editing"
+			:key="subscriber.id"
+			:subscriber-id="subscriber.id"
+			:subscriber-fields="subscriber.fields"
+		></subscriber-profile-additional-fields>
 	</v-container>
 </template>
 <script>
 	export default {
 		props: ['subscriberStates'],
 		data: () => ({
-      errors: [],
-      saving: false,
-      editing: false,
-      activeIndex: null,
-      subscriber: {
-        name: '',
-        email: '',
-        state: 'unconfirmed',
-        fields: []
-      }
+			errors: [],
+			saving: false,
+			editing: false,
+			activeIndex: null,
+			subscriber: {
+				name: '',
+				email: '',
+				state: 'unconfirmed',
+				fields: []
+			}
 		}),
 		methods: {
-      createSubscriber() {
-        this.saving = true
+			createSubscriber() {
+				this.saving = true
 
-        axios.post('/api/subscribers', this.subscriber)
-          .then(this.addSubscriber)
-          .catch(this.showErrors)
-          .then(this.saving = false)
-      },
-      addSubscriber({data}) {
-        this.resetForm()
+				axios.post('/api/subscribers', this.subscriber)
+					.then(this.addSubscriber)
+					.catch(this.showErrors)
+					.then(this.saving = false)
+			},
+			addSubscriber({data}) {
+				this.resetForm()
 
-        data.fields = []
+				data.fields = []
 
-        this.$emit('addSubscriber', data)
-      },
-      editSubscriber(subscriber, index) {
-        this.editing = true
+				this.$emit('addSubscriber', data)
+			},
+			editSubscriber(subscriber, index) {
+				this.editing = true
 
-        this.activeIndex = index
+				this.activeIndex = index
 
-        this.errors = []
+				this.errors = []
 
-        this.subscriber = _.clone(subscriber, true)
-      },
-      updateSubscriber() {
-        this.saving = true
+				this.subscriber = _.clone(subscriber, true)
+			},
+			updateSubscriber() {
+				this.saving = true
 
-        axios.put(`/api/subscribers/${this.subscriber.id}`, this.subscriber)
-          .then(({data}) => this.changeSubscriber(data, this.activeIndex))
-          .catch(this.showErrors)
-          .then(this.saving = false)
-      },
-      changeSubscriber(subscriber, index) {
-        this.finishEdit()
+				axios.put(`/api/subscribers/${this.subscriber.id}`, this.subscriber)
+					.then(({data}) => this.changeSubscriber(data, this.activeIndex))
+					.catch(this.showErrors)
+					.then(this.saving = false)
+			},
+			changeSubscriber(subscriber, index) {
+				this.finishEdit()
 
-        this.$emit('changeSubscriber', {subscriber, index})
-      },
-      showErrors({response}) {
-        this.errors = response.data.errors
-      },
-      finishEdit() {
-        this.editing = false
+				this.$emit('changeSubscriber', {subscriber, index})
+			},
+			showErrors({response}) {
+				this.errors = response.data.errors
+			},
+			finishEdit() {
+				this.editing = false
 
-        this.resetForm()
-      },
-      resetForm() {
-        this.errors = []
+				this.resetForm()
+			},
+			resetForm() {
+				this.errors = []
 
-        this.subscriber = {
-          name: '',
-          email: '',
-          state: 'unconfirmed',
-          fields: []
-        }
-      }
+				this.subscriber = {
+					name: '',
+					email: '',
+					state: 'unconfirmed',
+					fields: []
+				}
+			}
 		}
 	}
 </script>

@@ -2454,7 +2454,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.red-text {\n  color: red;\n}\n", ""]);
+exports.push([module.i, "\n.red-text {\n    color: red;\n}\n", ""]);
 
 // exports
 
@@ -2473,7 +2473,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.mt10 {\n  margin-top: 10px\n}\n", ""]);
+exports.push([module.i, "\n.mt10 {\n\tmargin-top: 10px\n}\n", ""]);
 
 // exports
 
@@ -2492,7 +2492,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.mt30 {\n  margin-top: 30px\n}\n", ""]);
+exports.push([module.i, "\n.mt30 {\n\tmargin-top: 30px\n}\n", ""]);
 
 // exports
 
@@ -20888,7 +20888,7 @@ var render = function() {
                           _vm._l(subscriber.fields, function(field) {
                             return _c("li", [
                               _vm._v(
-                                "\n                " +
+                                "\n\t\t\t\t\t\t\t\t" +
                                   _vm._s(
                                     field.title +
                                       " (" +
@@ -20896,7 +20896,7 @@ var render = function() {
                                       "): " +
                                       field.value
                                   ) +
-                                  "\n              "
+                                  "\n\t\t\t\t\t\t\t"
                               )
                             ])
                           }),
@@ -21332,7 +21332,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "\n\t          \t\t\t\tmdi-content-save\n\t          \t\t\t"
+                                            "\n\t\t\t\t\t\t\t\t\t\tmdi-content-save\n\t\t\t\t\t\t\t\t\t"
                                           )
                                         ]
                                       ),
@@ -21351,7 +21351,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "\n\t          \t\t\t\tmdi-delete\n\t          \t\t\t"
+                                            "\n\t\t\t\t\t\t\t\t\t\tmdi-delete\n\t\t\t\t\t\t\t\t\t"
                                           )
                                         ]
                                       )
