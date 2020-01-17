@@ -11,6 +11,8 @@
 |
 */
 
+// Route::apiResource('subscribers', 'SubscriberController')
+
 Route::resource('subscribers', 'SubscriberController')
 	->only(['index', 'store', 'update', 'destroy']);
 

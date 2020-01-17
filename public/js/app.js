@@ -1991,23 +1991,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2059,7 +2042,7 @@ __webpack_require__.r(__webpack_exports__);
     removeSubscriber: function removeSubscriber(index) {
       this.subscribers.splice(index, 1);
     },
-    saveSubscriber: function saveSubscriber(subscriber) {
+    addSubscriber: function addSubscriber(subscriber) {
       this.subscribers.push(subscriber);
     }
   }
@@ -2240,8 +2223,63 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['subscribers'],
+  data: function data() {
+    return {
+      errors: [],
+      saving: false,
+      subscriber: {
+        name: '',
+        email: '',
+        state: 'unconfirmed'
+      }
+    };
+  },
   methods: {
     openEditDialog: function openEditDialog(subscriber, index) {
       this.$emit('openEditDialog', {
@@ -2251,6 +2289,23 @@ __webpack_require__.r(__webpack_exports__);
     },
     removeSubscriber: function removeSubscriber(id, index) {
       axios["delete"]("/api/subscribers/".concat(id)).then(this.$emit('removeSubscriber', index));
+    },
+    createSubscriber: function createSubscriber() {
+      this.saving = true;
+      axios.post('/api/subscribers', this.subscriber).then(this.addSubscriber)["catch"](this.showErrors).then(this.saving = false);
+    },
+    addSubscriber: function addSubscriber(_ref) {
+      var data = _ref.data;
+      this.$emit('addSubscriber', data);
+      this.subscriber = {
+        name: '',
+        email: '',
+        state: 'unconfirmed'
+      };
+    },
+    showErrors: function showErrors(_ref2) {
+      var response = _ref2.response;
+      this.errors = response.data.errors;
     }
   }
 });
@@ -19924,7 +19979,7 @@ var render = function() {
         "v-app-bar",
         { attrs: { app: "", color: "#55A255", dark: "" } },
         [
-          _c("v-toolbar-title", [_c("b", [_vm._v("MailerLite")])]),
+          _c("v-toolbar-title", [_c("b", [_vm._v("MailerLite Subscribers")])]),
           _vm._v(" "),
           _c("v-spacer"),
           _vm._v(" "),
@@ -19945,39 +20000,12 @@ var render = function() {
         [
           _c(
             "v-container",
-            { attrs: { fluid: "" } },
-            [
-              _c(
-                "v-row",
-                { attrs: { align: "center" } },
-                [
-                  _c("v-col", { attrs: { cols: "9", sm: "9" } }, [
-                    _vm._v("\n\t\t\t\t\t\tSubscribers\n\t\t\t\t\t")
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: { dark: "", color: "#F0821C" },
-                      on: { click: _vm.openCreateDialog }
-                    },
-                    [_vm._v("Create Subscriber")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-container",
             { staticClass: "fill-height", attrs: { fluid: "" } },
             [
               _c("subscribers-list", {
                 attrs: { subscribers: _vm.subscribers },
                 on: {
-                  openEditDialog: _vm.openEditDialog,
+                  addSubscriber: _vm.addSubscriber,
                   removeSubscriber: _vm.removeSubscriber
                 }
               })
@@ -19990,8 +20018,7 @@ var render = function() {
       _vm._v(" "),
       _c("subscriber-dialog", {
         ref: "dialog",
-        attrs: { dataSubscriber: "subscriber" },
-        on: { saveSubscriber: _vm.saveSubscriber }
+        attrs: { dataSubscriber: "subscriber" }
       })
     ],
     1
@@ -20152,14 +20179,9 @@ var render = function() {
                 [
                   _c("v-spacer"),
                   _vm._v(" "),
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: { color: "blue darken-1", text: "" },
-                      on: { click: _vm.close }
-                    },
-                    [_vm._v("Close")]
-                  ),
+                  _c("v-btn", { attrs: { color: "blue darken-1", text: "" } }, [
+                    _vm._v("Close")
+                  ]),
                   _vm._v(" "),
                   _c(
                     "v-btn",
@@ -20209,21 +20231,142 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "v-card",
-    { staticClass: "mx-auto", attrs: { "min-width": "500" } },
+    "v-container",
+    { attrs: { fluid: "" } },
     [
       _c(
-        "v-toolbar",
-        { attrs: { color: "#55A256", dark: "" } },
+        "v-card",
         [
-          _c("v-toolbar-title", [_vm._v("Subscribers")]),
-          _vm._v(" "),
-          _c("v-spacer"),
+          _c("v-card-title", [
+            _c("span", { staticClass: "headline" }, [
+              _vm._v("Subscriber Profile")
+            ])
+          ]),
           _vm._v(" "),
           _c(
-            "v-btn",
-            { attrs: { icon: "" } },
-            [_c("v-icon", [_vm._v("mdi-magnify")])],
+            "v-card-text",
+            [
+              _c(
+                "v-container",
+                [
+                  _c(
+                    "v-row",
+                    [
+                      _c(
+                        "v-col",
+                        { attrs: { cols: "12" } },
+                        [
+                          _c("v-text-field", {
+                            attrs: { required: "", label: "Name*" },
+                            model: {
+                              value: _vm.subscriber.name,
+                              callback: function($$v) {
+                                _vm.$set(_vm.subscriber, "name", $$v)
+                              },
+                              expression: "subscriber.name"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm._l(_vm.errors.name, function(error) {
+                            return _c("p", [
+                              _c("ul", [
+                                _c("li", {
+                                  domProps: { textContent: _vm._s(error) }
+                                })
+                              ])
+                            ])
+                          })
+                        ],
+                        2
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-col",
+                        { attrs: { cols: "12" } },
+                        [
+                          _c("v-text-field", {
+                            attrs: { required: "", label: "Email*" },
+                            model: {
+                              value: _vm.subscriber.email,
+                              callback: function($$v) {
+                                _vm.$set(_vm.subscriber, "email", $$v)
+                              },
+                              expression: "subscriber.email"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm._l(_vm.errors.email, function(error) {
+                            return _c("p", [
+                              _c("ul", [
+                                _c("li", {
+                                  domProps: { textContent: _vm._s(error) }
+                                })
+                              ])
+                            ])
+                          })
+                        ],
+                        2
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-col",
+                        { attrs: { cols: "12" } },
+                        [
+                          _c("v-select", {
+                            attrs: {
+                              items: [
+                                "active",
+                                "unsubscribed",
+                                "junk",
+                                "bounced",
+                                "unconfirmed"
+                              ],
+                              label: "State*",
+                              required: ""
+                            },
+                            model: {
+                              value: _vm.subscriber.state,
+                              callback: function($$v) {
+                                _vm.$set(_vm.subscriber, "state", $$v)
+                              },
+                              expression: "subscriber.state"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-card-actions",
+            [
+              _c("v-spacer"),
+              _vm._v(" "),
+              _c("v-btn", { attrs: { color: "blue darken-1", text: "" } }, [
+                _vm._v("Cancel")
+              ]),
+              _vm._v(" "),
+              _c(
+                "v-btn",
+                {
+                  attrs: {
+                    text: "",
+                    color: "blue darken-1",
+                    disabled: _vm.saving
+                  },
+                  on: { click: _vm.createSubscriber }
+                },
+                [_vm._v("Save")]
+              )
+            ],
             1
           )
         ],
@@ -20231,60 +20374,73 @@ var render = function() {
       ),
       _vm._v(" "),
       _c(
-        "v-list",
-        { attrs: { subheader: "" } },
-        _vm._l(_vm.subscribers, function(subscriber, index) {
-          return _c(
-            "v-list-item",
-            { key: subscriber.id, on: { click: function($event) {} } },
-            [
-              _c(
-                "v-list-item-content",
-                [
-                  _c("v-list-item-title", {
-                    domProps: { textContent: _vm._s(subscriber.name) }
-                  }),
-                  _vm._v(" "),
-                  _c("v-list-item-subtitle", {
-                    domProps: { textContent: _vm._s(subscriber.email) }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-list-item-icon",
+        "v-card",
+        [
+          _c(
+            "v-toolbar",
+            { attrs: { color: "#55A256", dark: "" } },
+            [_c("v-toolbar-title", [_vm._v("Subscribers")])],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-list",
+            { attrs: { subheader: "" } },
+            _vm._l(_vm.subscribers, function(subscriber, index) {
+              return _c(
+                "v-list-item",
+                { key: subscriber.id, on: { click: function($event) {} } },
                 [
                   _c(
-                    "v-icon",
-                    {
-                      on: {
-                        click: function($event) {
-                          return _vm.openEditDialog(subscriber, index)
-                        }
-                      }
-                    },
-                    [_vm._v("mdi-pencil")]
+                    "v-list-item-content",
+                    [
+                      _c("v-list-item-title", {
+                        domProps: { textContent: _vm._s(subscriber.name) }
+                      }),
+                      _vm._v(" "),
+                      _c("v-list-item-subtitle", {
+                        domProps: { textContent: _vm._s(subscriber.email) }
+                      })
+                    ],
+                    1
                   ),
                   _vm._v(" "),
                   _c(
-                    "v-icon",
-                    {
-                      on: {
-                        click: function($event) {
-                          return _vm.removeSubscriber(subscriber.id, index)
-                        }
-                      }
-                    },
-                    [_vm._v("mdi-delete")]
+                    "v-list-item-icon",
+                    [
+                      _c(
+                        "v-icon",
+                        {
+                          on: {
+                            click: function($event) {
+                              return _vm.openEditDialog(subscriber, index)
+                            }
+                          }
+                        },
+                        [_vm._v("mdi-pencil")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-icon",
+                        {
+                          on: {
+                            click: function($event) {
+                              return _vm.removeSubscriber(subscriber.id, index)
+                            }
+                          }
+                        },
+                        [_vm._v("mdi-delete")]
+                      )
+                    ],
+                    1
                   )
                 ],
                 1
               )
-            ],
+            }),
             1
           )
-        }),
+        ],
         1
       )
     ],
@@ -73797,15 +73953,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!*****************************************************!*\
   !*** ./resources/js/components/SubscribersList.vue ***!
   \*****************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SubscribersList_vue_vue_type_template_id_a15dafa4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SubscribersList.vue?vue&type=template&id=a15dafa4& */ "./resources/js/components/SubscribersList.vue?vue&type=template&id=a15dafa4&");
 /* harmony import */ var _SubscribersList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SubscribersList.vue?vue&type=script&lang=js& */ "./resources/js/components/SubscribersList.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _SubscribersList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _SubscribersList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -73835,7 +73990,7 @@ component.options.__file = "resources/js/components/SubscribersList.vue"
 /*!******************************************************************************!*\
   !*** ./resources/js/components/SubscribersList.vue?vue&type=script&lang=js& ***!
   \******************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

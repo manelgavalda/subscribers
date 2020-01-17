@@ -29,7 +29,7 @@
       color="#55A255"
       dark
     >
-      <v-toolbar-title><b>MailerLite</b></v-toolbar-title>
+      <v-toolbar-title><b>MailerLite Subscribers</b></v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -37,29 +37,13 @@
     </v-app-bar>
 
     <v-content>
-    	<v-container
-  			fluid
-			>
-			  <v-row align="center">
-			  	<v-col cols="9" sm="9">
-						Subscribers
-					</v-col>
-
-        	<v-btn
-        		dark
-        		color="#F0821C"
-        		@click="openCreateDialog"
-      		>Create Subscriber</v-btn>
-				</v-row>
-			</v-container>
-
       <v-container
         class="fill-height"
         fluid
       >
       	<subscribers-list
 					:subscribers="subscribers"
-					@openEditDialog="openEditDialog"
+          @addSubscriber="addSubscriber"
 					@removeSubscriber="removeSubscriber"
       	></subscribers-list>
       </v-container>
@@ -68,7 +52,6 @@
     <subscriber-dialog
 	    ref="dialog"
     	dataSubscriber="subscriber"
-	    @saveSubscriber="saveSubscriber"
 	  ></subscriber-dialog>
 
   </v-app>
@@ -119,7 +102,7 @@
     	removeSubscriber(index) {
     		this.subscribers.splice(index, 1);
     	},
-    	saveSubscriber(subscriber) {
+    	addSubscriber(subscriber) {
     		this.subscribers.push(subscriber);
     	}
     }
