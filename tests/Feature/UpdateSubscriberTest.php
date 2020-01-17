@@ -68,11 +68,15 @@ class UpdateSubscriberTest extends TestCase
     }
 
     /** @test */
-    public function a_subscriber_can_be_updated_and_it_is_returned()
+    public function a_subscriber_can_be_updated_and_it_is_returned_with_fields()
     {
         $subscriber = factory('App\Subscriber')->create([
             'name' => 'Manel',
             'email' => 'manelgavalda@gmail.com'
+        ]);
+
+        $field = factory('App\Field')->create([
+            'subscriber_id' => $subscriber->id
         ]);
 
         $newAttributes = [
@@ -81,7 +85,8 @@ class UpdateSubscriberTest extends TestCase
         ];
 
         $this->put("/api/subscribers/{$subscriber->id}", $newAttributes)
-            ->assertJsonFragment($newAttributes);
+            ->assertJsonFragment($newAttributes)
+            ->assertSee($field->fresh());
 
         $subscriber = $subscriber->fresh();
 

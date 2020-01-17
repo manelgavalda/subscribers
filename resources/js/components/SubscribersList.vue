@@ -17,11 +17,9 @@
                 label="Name*"
                 v-model="subscriber.name"
               ></v-text-field>
-              <p v-for="error in errors.name">
-                <ul>
-                  <li v-text="error"></li>
-                </ul>
-              </p>
+              <errors
+                :errors="errors.name"
+              ></errors>
             </v-col>
             <v-col cols="12">
               <v-text-field
@@ -30,11 +28,9 @@
                 label="Email*"
                 v-model="subscriber.email"
               ></v-text-field>
-              <p v-for="error in errors.email">
-                <ul>
-                  <li v-text="error"></li>
-                </ul>
-              </p>
+              <errors
+                :errors="errors.email"
+              ></errors>
             </v-col>
             <v-col cols="12">
               <v-select
@@ -74,7 +70,7 @@
     </v-card>
 
     <v-card
-      class="mx-auto"
+      class="mx-auto mt30"
       max-width="1000"
       v-if="editing"
     >
@@ -92,6 +88,9 @@
                 label="New Field"
                 v-model="field.title"
               ></v-text-field>
+              <errors
+                :errors="errors.title"
+              ></errors>
             </v-col>
             <v-col cols="6">
               <v-select
@@ -127,8 +126,7 @@
     </v-card>
 
     <v-card
-      style="margin-top:40px"
-      class="mx-auto"
+      class="mx-auto mt30"
       max-width="1000"
     >
       <v-toolbar color="#55A256" dark>
@@ -165,6 +163,13 @@
         </v-list-item>
       </v-list>
     </v-card>
+    <v-snackbar
+      v-model="fieldUpdated"
+      :timeout="1500"
+      color="green"
+    >
+    Field Updated
+    </v-snackbar>
   </v-container>
 </template>
 <script>
@@ -175,6 +180,7 @@
       saving: false,
       editing: false,
       activeIndex: null,
+      fieldUpdated: false,
       subscriberStates: {
         active: 'green',
         unsubscribed: 'secondary',
@@ -200,7 +206,7 @@
         axios.post('/api/subscribers', this.subscriber)
           .then(this.addSubscriber)
           .catch(this.showErrors)
-          .then(this.saving = false)
+          .then(() => this.saving = false)
       },
       addSubscriber({data}) {
         this.resetForm()
@@ -214,6 +220,8 @@
 
         this.activeIndex = index
 
+        this.errors = []
+
         this.subscriber = _.clone(subscriber, true)
       },
       updateSubscriber() {
@@ -222,7 +230,7 @@
         axios.put(`/api/subscribers/${this.subscriber.id}`, this.subscriber)
           .then(({data}) => this.changeSubscriber(data, this.activeIndex))
           .catch(this.showErrors)
-          .then(this.saving = false)
+          .then(() => this.saving = false)
       },
       changeSubscriber(subscriber, index) {
         this.finishEdit()
@@ -231,7 +239,7 @@
       },
     	removeSubscriber(id, index) {
     		axios.delete(`/api/subscribers/${id}`)
-    			.then(this.$emit('removeSubscriber', index))
+    			.then(() => this.$emit('removeSubscriber', index))
     	},
       showErrors({response}) {
         this.errors = response.data.errors
@@ -264,9 +272,12 @@
         axios.post('/api/fields', field)
           .then(this.addField)
           .catch(this.showErrors)
+          .then(() => this.saving = false)
       },
       addField({data}) {
         this.saving = false
+
+        this.errors = []
 
         this.field = {
           title: '',
@@ -279,7 +290,9 @@
         this.saving = true
 
         axios.put(`/api/fields/${field.id}`, field)
-          .then(this.saving = false)
+          .then(() => this.fieldUpdated = true)
+          .catch(this.showErrors)
+          .then(() => this.saving = false)
       },
       deleteField(id, index) {
         axios.delete(`/api/fields/${id}`)
@@ -291,3 +304,8 @@
     }
   }
 </script>
+<style>
+  .mt30 {
+    margin-top: 30px;
+  }
+</style>
