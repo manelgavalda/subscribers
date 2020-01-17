@@ -1,10 +1,8 @@
 <p align="center"><img src="https://raw.githubusercontent.com/manelgavalda/MailerLiteSubscribers/master/public/img/MailerliteSubscribers.png" width="800"></p>
 
-## MailerLite Subscribers
+## :radio_button: About MailerLite Subscribers
 
-Laravel and VueJs application used to manage email subscribers and their fields:
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Laravel and VueJs application used to manage email subscribers and their fields.
 
 ## :rocket: Installation
 
@@ -16,7 +14,7 @@ Clone the repository
 
 Switch to the repo folder
 
-    cd mailerLiteSubscribers
+    cd MailerLiteSubscribers
 
 Install all the dependencies using composer
 
@@ -44,7 +42,7 @@ Start the local development server
 
 You can now access the server at http://localhost:8000
 
-## Testing
+## :100: Testing
 
 This project uses `phpunit` (**installed with composer**) to test the application backend
 
