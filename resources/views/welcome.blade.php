@@ -14,7 +14,7 @@
     </head>
     <body>
         <v-app id="app">
-            <app></app>
+            <subscribers></subscribers>
         </v-app>
     </body>
     <script type="text/javascript" src="{!! asset('js/app.js') !!}"></script>

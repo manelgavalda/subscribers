@@ -47,9 +47,7 @@ class SubscriberController extends Controller
             ]
         ]);
 
-    	$subscriber->update(request()->all());
-
-        return response($subscriber, 200);
+    	return tap($subscriber)->update(request()->all());
     }
 
     public function destroy(Subscriber $subscriber)

@@ -44,16 +44,11 @@
       	<subscribers-list
 					:subscribers="subscribers"
           @addSubscriber="addSubscriber"
+          @changeSubscriber="changeSubscriber"
 					@removeSubscriber="removeSubscriber"
       	></subscribers-list>
       </v-container>
     </v-content>
-
-    <subscriber-dialog
-	    ref="dialog"
-    	dataSubscriber="subscriber"
-	  ></subscriber-dialog>
-
   </v-app>
 </template>
 
@@ -71,40 +66,15 @@
     		axios.get('/api/subscribers')
     			.then(({data}) => this.subscribers = data);
     	},
-    	openCreateDialog() {
-    		const form = {
-    			method: 'post',
-    			url: '/api/subscribers',
-    			data: {
-	    			id: '0',
-	    			name: '',
-	    			email: '',
-	    			state: 'unconfirmed'
-	    		}
-    		};
-
-    		this.openDialog(form);
+    	addSubscriber(subscriber) {
+    		this.subscribers.push(subscriber);
     	},
-    	openEditDialog(data) {
-    		const form = {
-    			method: 'put',
-    			url: `/api/subscribers/${data.subscriber.id}`,
-    			data: data.subscriber
-    		};
-
-    		this.subscriber = data.subscriber;
-
-    		this.openDialog(form);
-    	},
-    	openDialog(form) {
-    		Vue.nextTick(() => this.$refs.dialog.open(form))
-    	},
+      changeSubscriber(data) {
+        this.subscribers[data.index] = data.subscriber;
+      },
     	removeSubscriber(index) {
     		this.subscribers.splice(index, 1);
     	},
-    	addSubscriber(subscriber) {
-    		this.subscribers.push(subscriber);
-    	}
     }
   }
 </script>

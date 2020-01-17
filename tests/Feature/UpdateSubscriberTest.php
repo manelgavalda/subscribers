@@ -68,7 +68,7 @@ class UpdateSubscriberTest extends TestCase
     }
 
     /** @test */
-    public function a_subscriber_can_be_partially_updated()
+    public function a_subscriber_can_be_partially_updated_and_updates_are_returned()
     {
         $subscriber = factory('App\Subscriber')->create([
             'name' => 'Manel',
@@ -78,7 +78,14 @@ class UpdateSubscriberTest extends TestCase
         $this->put("/api/subscribers/{$subscriber->id}", [
             'name' => 'New Name',
             'email' => 'manelgavalda@gmail.com'
-        ])->assertOk();
+        ])->assertExactJson([
+            'id' => $subscriber->id,
+            'email' => 'manelgavalda@gmail.com',
+            'name' => 'New Name',
+            'state' => 'unconfirmed',
+            'created_at' => (string) $subscriber->created_at,
+            'updated_at' => (string) now()
+        ]);
     }
 
     /** @test */
