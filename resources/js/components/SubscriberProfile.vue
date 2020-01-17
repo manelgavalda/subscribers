@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-card
+	<v-container>
+		<v-card
       class="mx-auto"
       max-width="1000"
     >
@@ -108,86 +108,55 @@
               v-for="(field, index) in subscriber.fields"
               :key="index"
             >
-              <v-text-field
-                filled
-                required
-                type="string"
-                v-model="field.value"
-                append-icon="mdi-content-save"
-                append-outer-icon="mdi-delete"
-                :label="field.title + ' (' + field.type + ')' | capitalize"
-                @click:append="updateField(field)"
-                @click:append-outer="deleteField(field.id, index)"
-              ></v-text-field>
+            	<v-row center-content>
+            		<v-col cols="10">
+		              <v-checkbox
+		              	v-if="field.type == 'boolean'"
+		              	class="mx-2"
+		              	:label="field.title"
+		              	v-model="field.value"
+		            	></v-checkbox>
+		              <v-text-field
+		                filled
+		                required
+		                :type="field.type"
+		                :label="field.title | capitalize"
+		                v-else
+		                v-model="field.value"
+		              ></v-text-field>
+		            </v-col>
+		            <v-col cols="2">
+	          			<v-icon @click="updateField(field, index)">
+	          				mdi-content-save
+	          			</v-icon>
+	            		<v-icon @click="deleteField(field.id, index)">
+	          				mdi-delete
+	          			</v-icon>
+	          		</v-col>
+            	</v-row>
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
+      <v-snackbar
+	      color="green"
+	      :timeout="1500"
+	      v-model="fieldUpdated"
+	    >
+	    	Field Updated
+	    </v-snackbar>
     </v-card>
-
-    <v-card
-      class="mx-auto mt30"
-      max-width="1000"
-    >
-      <v-toolbar color="#55A256" dark>
-        <v-toolbar-title>Subscribers</v-toolbar-title>
-      </v-toolbar>
-
-      <v-list subheader>
-        <v-list-item
-          v-for="(subscriber, index) in subscribers"
-          :key="index"
-        >
-          <v-list-item-content>
-            <v-list-item-title
-              v-text="subscriber.name"
-            ></v-list-item-title>
-            <v-list-item-subtitle
-              v-text="subscriber.email"
-            ></v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-content>
-            <v-chip
-              :color="subscriberStates[subscriber.state]"
-              v-text="subscriber.state"
-            ></v-chip>
-          </v-list-item-content>
-          <v-list-item-icon>
-            <v-icon
-            	@click="editSubscriber(subscriber, index)"
-          	>mdi-pencil</v-icon>
-            <v-icon
-            	@click="removeSubscriber(subscriber.id, index)"
-          	>mdi-delete</v-icon>
-          </v-list-item-icon>
-        </v-list-item>
-      </v-list>
-    </v-card>
-    <v-snackbar
-      v-model="fieldUpdated"
-      :timeout="1500"
-      color="green"
-    >
-    Field Updated
-    </v-snackbar>
-  </v-container>
+	</v-container>
 </template>
 <script>
-  export default {
-    props: ['subscribers'],
-    data: () => ({
+	export default {
+		props: ['subscriberStates'],
+		data: () => ({
       errors: [],
       saving: false,
       editing: false,
       activeIndex: null,
       fieldUpdated: false,
-      subscriberStates: {
-        active: 'green',
-        unsubscribed: 'secondary',
-        junk: 'red',
-        bounced: 'primary',
-        unconfirmed: ''
-      },
       subscriber: {
         name: '',
         email: '',
@@ -198,8 +167,8 @@
         title: '',
         type: 'string'
       }
-    }),
-    methods: {
+		}),
+		methods: {
       createSubscriber() {
         this.saving = true
 
@@ -237,17 +206,8 @@
 
         this.$emit('changeSubscriber', {subscriber, index})
       },
-    	removeSubscriber(id, index) {
-    		axios.delete(`/api/subscribers/${id}`)
-    			.then(() => this.$emit('removeSubscriber', index))
-    	},
-      showErrors({response}) {
-        this.errors = response.data.errors
-      },
-      finishEdit() {
-        this.editing = false
-
-        this.resetForm()
+      showErrors(data) {
+        this.errors = data.response.data.errors
       },
       resetForm() {
         this.errors = []
@@ -263,6 +223,11 @@
           title: '',
           type: 'string'
         }
+      },
+      finishEdit() {
+        this.editing = false
+
+        this.resetForm()
       },
       createField(field) {
         this.saving = true
@@ -297,15 +262,10 @@
       deleteField(id, index) {
         axios.delete(`/api/fields/${id}`)
           .then(this.subscriber.fields.splice(index, 1))
-      },
-    },
+      }
+		},
     filters: {
       capitalize: text => text.charAt(0).toUpperCase() + text.slice(1)
     }
-  }
+	}
 </script>
-<style>
-  .mt30 {
-    margin-top: 30px;
-  }
-</style>

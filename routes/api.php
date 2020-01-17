@@ -11,10 +11,8 @@
 |
 */
 
-// Route::apiResource('subscribers', 'SubscriberController')
-
-Route::resource('subscribers', 'SubscriberController')
+Route::apiResource('subscribers', 'SubscriberController')
 	->only(['index', 'store', 'update', 'destroy']);
 
-Route::resource('fields', 'FieldController')
+Route::apiResource('fields', 'FieldController')
 	->only(['store', 'update', 'destroy']);

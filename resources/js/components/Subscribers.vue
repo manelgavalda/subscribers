@@ -17,12 +17,19 @@
         class="fill-height"
         fluid
       >
-      	<subscribers-list
-					:subscribers="subscribers"
+        <subscriber-profile
+          ref="subscriberProfile"
+          :subscriber-states="subscriberStates"
           @addSubscriber="addSubscriber"
           @changeSubscriber="changeSubscriber"
+        ></subscriber-profile>
+
+      	<subscriber-list
+					:subscribers="subscribers"
+          :subscriber-states="subscriberStates"
+          @editSubscriber="editSubscriber"
 					@removeSubscriber="removeSubscriber"
-      	></subscribers-list>
+      	></subscriber-list>
       </v-container>
     </v-content>
   </v-app>
@@ -31,7 +38,14 @@
 <script>
   export default {
     data: () => ({
-    	subscribers: []
+    	subscribers: [],
+      subscriberStates: {
+        active: 'green',
+        unsubscribed: 'secondary',
+        junk: 'red',
+        bounced: 'primary',
+        unconfirmed: ''
+      }
     }),
     mounted() {
     	this.getSubscribers()
@@ -45,11 +59,15 @@
     		this.subscribers.push(subscriber)
     	},
       changeSubscriber(data) {
-        this.subscribers[data.index] = data.subscriber
+        Vue.set(this.subscribers, data.index, data.subscriber)
       },
     	removeSubscriber(index) {
     		this.subscribers.splice(index, 1)
     	},
+      editSubscriber(data) {
+        this.$refs.subscriberProfile
+          .editSubscriber(data.subscriber, data.index)
+      }
     }
   }
 </script>
