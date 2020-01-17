@@ -26,8 +26,8 @@
 
     <v-app-bar
       app
-      color="#55A255"
       dark
+      color="#55A255"
     >
       <v-toolbar-title><b>MailerLite Subscribers</b></v-toolbar-title>
 

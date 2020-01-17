@@ -2128,6 +2128,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['subscribers'],
   data: function data() {
@@ -2136,6 +2142,13 @@ __webpack_require__.r(__webpack_exports__);
       saving: false,
       editing: false,
       activeIndex: null,
+      subscriberStates: {
+        active: 'green',
+        unsubscribed: 'secondary',
+        junk: 'red',
+        bounced: 'primary',
+        unconfirmed: ''
+      },
       subscriber: {
         name: '',
         email: '',
@@ -19863,7 +19876,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "v-app-bar",
-        { attrs: { app: "", color: "#55A255", dark: "" } },
+        { attrs: { app: "", dark: "", color: "#55A255" } },
         [
           _c("v-toolbar-title", [_c("b", [_vm._v("MailerLite Subscribers")])]),
           _vm._v(" "),
@@ -19930,7 +19943,6 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "v-container",
-    { attrs: { fluid: "" } },
     [
       _c(
         "v-card",
@@ -20014,13 +20026,7 @@ var render = function() {
                             attrs: {
                               required: "",
                               label: "State*",
-                              items: [
-                                "active",
-                                "unsubscribed",
-                                "junk",
-                                "bounced",
-                                "unconfirmed"
-                              ]
+                              items: Object.keys(_vm.subscriberStates)
                             },
                             model: {
                               value: _vm.subscriber.state,
@@ -20071,7 +20077,7 @@ var render = function() {
                     {
                       attrs: {
                         text: "",
-                        color: "blue darken-1",
+                        color: "#55A255",
                         disabled: _vm.saving
                       },
                       on: { click: _vm.createSubscriber }
@@ -20083,7 +20089,7 @@ var render = function() {
                     {
                       attrs: {
                         text: "",
-                        color: "blue darken-1",
+                        color: "#55A255",
                         disabled: _vm.saving
                       },
                       on: { click: _vm.updateSubscriber }
@@ -20124,6 +20130,19 @@ var render = function() {
                       _vm._v(" "),
                       _c("v-list-item-subtitle", {
                         domProps: { textContent: _vm._s(subscriber.email) }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-list-item-content",
+                    [
+                      _c("v-chip", {
+                        attrs: {
+                          color: _vm.subscriberStates[subscriber.state]
+                        },
+                        domProps: { textContent: _vm._s(subscriber.state) }
                       })
                     ],
                     1

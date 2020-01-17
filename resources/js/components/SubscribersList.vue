@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-card>
       <v-card-title>
         <span class="headline">Subscriber Profile</span>
@@ -37,7 +37,7 @@
                 required
                 label="State*"
                 v-model="subscriber.state"
-                :items="['active', 'unsubscribed', 'junk', 'bounced', 'unconfirmed']"
+                :items="Object.keys(subscriberStates)"
               ></v-select>
             </v-col>
           </v-row>
@@ -53,14 +53,14 @@
         >Cancel</v-btn>
         <v-btn
           text
-          color="blue darken-1"
+          color="#55A255"
           v-if="! editing"
           @click="createSubscriber"
           :disabled="saving"
         >Create</v-btn>
         <v-btn
           text
-          color="blue darken-1"
+          color="#55A255"
           v-else
           @click="updateSubscriber"
           :disabled="saving"
@@ -85,6 +85,12 @@
               v-text="subscriber.email"
             ></v-list-item-subtitle>
           </v-list-item-content>
+          <v-list-item-content>
+            <v-chip
+              :color="subscriberStates[subscriber.state]"
+              v-text="subscriber.state"
+            ></v-chip>
+          </v-list-item-content>
           <v-list-item-icon>
             <v-icon
             	@click="editSubscriber(subscriber, index)"
@@ -106,6 +112,13 @@
       saving: false,
       editing: false,
       activeIndex: null,
+      subscriberStates: {
+        active: 'green',
+        unsubscribed: 'secondary',
+        junk: 'red',
+        bounced: 'primary',
+        unconfirmed: ''
+      },
       subscriber: {
         name: '',
         email: '',
