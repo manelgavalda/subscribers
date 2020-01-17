@@ -59,21 +59,21 @@
     	subscribers: []
     }),
     mounted() {
-    	this.getSubscribers();
+    	this.getSubscribers()
     },
     methods: {
     	getSubscribers() {
     		axios.get('/api/subscribers')
-    			.then(({data}) => this.subscribers = data);
+    			.then(({data}) => this.subscribers = data)
     	},
     	addSubscriber(subscriber) {
-    		this.subscribers.push(subscriber);
+    		this.subscribers.push(subscriber)
     	},
       changeSubscriber(data) {
-        this.subscribers[data.index] = data.subscriber;
+        this.subscribers[data.index] = data.subscriber
       },
     	removeSubscriber(index) {
-    		this.subscribers.splice(index, 1);
+    		this.subscribers.splice(index, 1)
     	},
     }
   }

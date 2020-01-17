@@ -2155,8 +2155,8 @@ __webpack_require__.r(__webpack_exports__);
     },
     editSubscriber: function editSubscriber(subscriber, index) {
       this.editing = true;
-      this.subscriber = subscriber;
       this.activeIndex = index;
+      this.subscriber = subscriber;
     },
     updateSubscriber: function updateSubscriber() {
       var _this = this;

@@ -114,57 +114,57 @@
     }),
     methods: {
       createSubscriber() {
-        this.saving = true;
+        this.saving = true
 
         axios.post('/api/subscribers', this.subscriber)
           .then(this.addSubscriber)
           .catch(this.showErrors)
-          .then(this.saving = false);
+          .then(this.saving = false)
       },
       addSubscriber({data}) {
-        this.resetForm();
+        this.resetForm()
 
-        this.$emit('addSubscriber', data);
+        this.$emit('addSubscriber', data)
       },
       editSubscriber(subscriber, index) {
-        this.editing = true;
+        this.editing = true
 
-        this.subscriber = subscriber;
-        this.activeIndex = index;
+        this.activeIndex = index
+        this.subscriber = subscriber
       },
       updateSubscriber() {
-        this.saving = true;
+        this.saving = true
 
         axios.put(`/api/subscribers/${this.subscriber.id}`, this.subscriber)
           .then(({data}) => this.changeSubscriber(data, this.activeIndex))
           .catch(this.showErrors)
-          .then(this.saving = false);
+          .then(this.saving = false)
       },
       changeSubscriber(subscriber, index) {
-        this.finishEdit();
+        this.finishEdit()
 
-        this.$emit('changeSubscriber', {subscriber, index});
+        this.$emit('changeSubscriber', {subscriber, index})
       },
     	removeSubscriber(id, index) {
     		axios.delete(`/api/subscribers/${id}`)
-    			.then(this.$emit('removeSubscriber', index));
+    			.then(this.$emit('removeSubscriber', index))
     	},
       showErrors({response}) {
-        this.errors = response.data.errors;
+        this.errors = response.data.errors
       },
       finishEdit() {
-        this.editing = false;
+        this.editing = false
 
-        this.resetForm();
+        this.resetForm()
       },
       resetForm() {
-        this.errors = [];
+        this.errors = []
 
         this.subscriber = {
           name: '',
           email: '',
           state: 'unconfirmed'
-        };
+        }
       }
     }
   }
