@@ -8,14 +8,25 @@ class FieldController extends Controller
 {
     public function store()
     {
-    	return Field::create($this->validatedAttributes());
+        request()->validate([
+            'title' => 'required',
+            'type' => 'required',
+            'subscriber_id' => 'required'
+        ]);
+
+    	return Field::create(request()->all());
     }
 
     public function update(Field $field)
     {
-    	$field->update($this->validatedAttributes());
+        request()->validate([
+            'title' => 'required',
+            'type' => 'required',
+            'value' => 'required',
+            'subscriber_id' => 'required'
+        ]);
 
-        return response($field, 200);
+    	return tap($field)->update(request()->all());
     }
 
     public function destroy(Field $field)
@@ -23,15 +34,5 @@ class FieldController extends Controller
     	$field->delete();
 
         return response($field, 204);
-    }
-
-    protected function validatedAttributes()
-    {
-    	return request()->validate([
-    		'title' => 'required',
-    		'type' => 'required',
-    		'value' => 'required',
-    		'subscriber_id' => 'required'
-    	]);
     }
 }

@@ -1962,34 +1962,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      drawer: null,
       subscribers: []
     };
   },
@@ -2134,6 +2109,69 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['subscribers'],
   data: function data() {
@@ -2152,7 +2190,12 @@ __webpack_require__.r(__webpack_exports__);
       subscriber: {
         name: '',
         email: '',
-        state: 'unconfirmed'
+        state: 'unconfirmed',
+        fields: []
+      },
+      field: {
+        title: '',
+        type: 'string'
       }
     };
   },
@@ -2164,6 +2207,7 @@ __webpack_require__.r(__webpack_exports__);
     addSubscriber: function addSubscriber(_ref) {
       var data = _ref.data;
       this.resetForm();
+      data.fields = [];
       this.$emit('addSubscriber', data);
     },
     editSubscriber: function editSubscriber(subscriber, index) {
@@ -2203,8 +2247,39 @@ __webpack_require__.r(__webpack_exports__);
       this.subscriber = {
         name: '',
         email: '',
-        state: 'unconfirmed'
+        state: 'unconfirmed',
+        fields: []
       };
+      this.field = {
+        title: '',
+        type: 'string'
+      };
+    },
+    createField: function createField(field) {
+      this.saving = true;
+      field.subscriber_id = this.subscriber.id;
+      axios.post('/api/fields', field).then(this.addField)["catch"](this.showErrors);
+    },
+    addField: function addField(_ref4) {
+      var data = _ref4.data;
+      this.saving = false;
+      this.field = {
+        title: '',
+        type: 'string'
+      };
+      this.subscriber.fields.push(data);
+    },
+    updateField: function updateField(field) {
+      this.saving = true;
+      axios.put("/api/fields/".concat(field.id), field).then(this.saving = false);
+    },
+    deleteField: function deleteField(id, index) {
+      axios["delete"]("/api/fields/".concat(id)).then(this.subscriber.fields.splice(index, 1));
+    }
+  },
+  filters: {
+    capitalize: function capitalize(text) {
+      return text.charAt(0).toUpperCase() + text.slice(1);
     }
   }
 });
@@ -19814,67 +19889,6 @@ var render = function() {
     "v-app",
     [
       _c(
-        "v-navigation-drawer",
-        {
-          attrs: { app: "" },
-          model: {
-            value: _vm.drawer,
-            callback: function($$v) {
-              _vm.drawer = $$v
-            },
-            expression: "drawer"
-          }
-        },
-        [
-          _c(
-            "v-list",
-            { attrs: { dense: "" } },
-            [
-              _c(
-                "v-list-item",
-                { attrs: { link: "" } },
-                [
-                  _c(
-                    "v-list-item-action",
-                    [_c("v-icon", [_vm._v("mdi-home")])],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-list-item-content",
-                    [_c("v-list-item-title", [_vm._v("Subscribers")])],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-list-item",
-                { attrs: { link: "" } },
-                [
-                  _c(
-                    "v-list-item-action",
-                    [_c("v-icon", [_vm._v("mdi-contact-mail")])],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-list-item-content",
-                    [_c("v-list-item-title", [_vm._v("Fields")])],
-                    1
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
         "v-app-bar",
         { attrs: { app: "", dark: "", color: "#55A255" } },
         [
@@ -19882,14 +19896,7 @@ var render = function() {
           _vm._v(" "),
           _c("v-spacer"),
           _vm._v(" "),
-          _c("v-app-bar-nav-icon", {
-            on: {
-              click: function($event) {
-                $event.stopPropagation()
-                _vm.drawer = !_vm.drawer
-              }
-            }
-          })
+          _c("v-app-bar-nav-icon")
         ],
         1
       ),
@@ -19946,6 +19953,7 @@ var render = function() {
     [
       _c(
         "v-card",
+        { staticClass: "mx-auto", attrs: { "max-width": "1000" } },
         [
           _c("v-card-title", [
             _c("span", { staticClass: "headline" }, [
@@ -19967,7 +19975,7 @@ var render = function() {
                         { attrs: { cols: "12" } },
                         [
                           _c("v-text-field", {
-                            attrs: { required: "", label: "Name*" },
+                            attrs: { filled: "", required: "", label: "Name*" },
                             model: {
                               value: _vm.subscriber.name,
                               callback: function($$v) {
@@ -19995,7 +20003,11 @@ var render = function() {
                         { attrs: { cols: "12" } },
                         [
                           _c("v-text-field", {
-                            attrs: { required: "", label: "Email*" },
+                            attrs: {
+                              filled: "",
+                              required: "",
+                              label: "Email*"
+                            },
                             model: {
                               value: _vm.subscriber.email,
                               callback: function($$v) {
@@ -20024,6 +20036,7 @@ var render = function() {
                         [
                           _c("v-select", {
                             attrs: {
+                              filled: "",
                               required: "",
                               label: "State*",
                               items: Object.keys(_vm.subscriberStates)
@@ -20103,8 +20116,131 @@ var render = function() {
         1
       ),
       _vm._v(" "),
+      _vm.editing
+        ? _c(
+            "v-card",
+            { staticClass: "mx-auto", attrs: { "max-width": "1000" } },
+            [
+              _c("v-card-title", [_c("span", [_vm._v("Additional Fields")])]),
+              _vm._v(" "),
+              _c(
+                "v-card-text",
+                [
+                  _c(
+                    "v-container",
+                    [
+                      _c(
+                        "v-row",
+                        [
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "6" } },
+                            [
+                              _c("v-text-field", {
+                                attrs: {
+                                  filled: "",
+                                  required: "",
+                                  type: "string",
+                                  label: "New Field"
+                                },
+                                model: {
+                                  value: _vm.field.title,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.field, "title", $$v)
+                                  },
+                                  expression: "field.title"
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "6" } },
+                            [
+                              _c("v-select", {
+                                attrs: {
+                                  filled: "",
+                                  required: "",
+                                  label: "Type",
+                                  "append-outer-icon": "mdi-plus",
+                                  items: ["date", "number", "string", "boolean"]
+                                },
+                                on: {
+                                  "click:append-outer": function($event) {
+                                    return _vm.createField(_vm.field)
+                                  }
+                                },
+                                model: {
+                                  value: _vm.field.type,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.field, "type", $$v)
+                                  },
+                                  expression: "field.type"
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _vm._l(_vm.subscriber.fields, function(field, index) {
+                            return _c(
+                              "v-col",
+                              { key: index, attrs: { cols: "12" } },
+                              [
+                                _c("v-text-field", {
+                                  attrs: {
+                                    filled: "",
+                                    required: "",
+                                    type: "string",
+                                    "append-icon": "mdi-content-save",
+                                    "append-outer-icon": "mdi-delete",
+                                    label: _vm._f("capitalize")(
+                                      field.title + " (" + field.type + ")"
+                                    )
+                                  },
+                                  on: {
+                                    "click:append": function($event) {
+                                      return _vm.updateField(field)
+                                    },
+                                    "click:append-outer": function($event) {
+                                      return _vm.deleteField(field.id, index)
+                                    }
+                                  },
+                                  model: {
+                                    value: field.value,
+                                    callback: function($$v) {
+                                      _vm.$set(field, "value", $$v)
+                                    },
+                                    expression: "field.value"
+                                  }
+                                })
+                              ],
+                              1
+                            )
+                          })
+                        ],
+                        2
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
       _c(
         "v-card",
+        {
+          staticClass: "mx-auto",
+          staticStyle: { "margin-top": "40px" },
+          attrs: { "max-width": "1000" }
+        },
         [
           _c(
             "v-toolbar",
@@ -20119,7 +20255,7 @@ var render = function() {
             _vm._l(_vm.subscribers, function(subscriber, index) {
               return _c(
                 "v-list-item",
-                { key: subscriber.id },
+                { key: index },
                 [
                   _c(
                     "v-list-item-content",

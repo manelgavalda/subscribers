@@ -9,7 +9,7 @@ class SubscriberController extends Controller
 {
     public function index()
     {
-        return Subscriber::all();
+        return Subscriber::with('fields')->get();
     }
 
     public function store()
@@ -25,13 +25,7 @@ class SubscriberController extends Controller
             ]
         ]);
 
-    	$subscriber = Subscriber::create(request()->all());
-
-    	foreach (request('fields', []) as $field) {
-    		$subscriber->fields()->create($field);
-    	}
-
-        return response($subscriber, 201);
+        return Subscriber::create(request()->all());
     }
 
     public function update(Subscriber $subscriber)

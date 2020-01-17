@@ -7,9 +7,9 @@ use Faker\Generator as Faker;
 
 $factory->define(Field::class, function (Faker $faker) {
     return [
-        'title' => $faker->name,
+        'title' => $faker->word,
         'type' => 'string',
-        'value' => 'string',
+        'value' => $faker->name,
         'subscriber_id' => factory('App\Subscriber')
     ];
 });

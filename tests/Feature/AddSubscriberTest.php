@@ -2,16 +2,15 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Database\QueryException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AddSubscriberTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    public function a_subscriber_requires_a_title_and_an_email()
+    public function a_subscriber_requires_a_name_and_an_email()
     {
         $this->post('/api/subscribers', [
             'name' => null,
@@ -47,10 +46,9 @@ class AddSubscriberTest extends TestCase
     /** @test */
     public function a_subscriber_email_must_be_unique()
     {
-        $this->post('/api/subscribers', [
-            'name' => 'Manel',
+        factory('App\Subscriber')->create([
             'email' => 'manel@gmail.com'
-        ])->assertCreated();
+        ]);
 
         $this->post('/api/subscribers', [
             'name' => 'Manel',
@@ -61,10 +59,23 @@ class AddSubscriberTest extends TestCase
     }
 
     /** @test */
+    public function a_subscriber_can_be_created_with_correct_data()
+    {
+        $attributes = [
+            'name' => 'Manel',
+            'email' => 'manel@gmail.com'
+        ];
+
+        $this->post('/api/subscribers', $attributes)
+            ->assertCreated()
+            ->assertJsonFragment($attributes);
+
+        $this->assertDatabaseHas('subscribers', $attributes);
+    }
+
+    /** @test */
     public function a_subscriber_is_unconfirmed_by_default_unless_is_created_explicitly()
     {
-        $this->withoutExceptionHandling();
-
         $this->post('/api/subscribers', [
             'name' => 'Unconfirmed User',
             'email' => 'unconfirmeduser@mailerlite.com'
@@ -84,39 +95,6 @@ class AddSubscriberTest extends TestCase
             'name' => 'Active User',
             'email' => 'activeuser@mailerlite.com',
             'state' => 'active'
-        ]);
-    }
-
-    /** @test */
-    public function you_can_add_fields_when_creating_a_subscriber()
-    {
-        $this->post('/api/subscribers', [
-            'name' => 'Manel',
-            'email' => 'manelgavalda@mailerlite.com',
-            'fields' => [
-                [
-                    'title' => 'Birthdate',
-                    'type' => 'date',
-                    'value' => today()->subYears(22)->format('Y-m-d')
-                ],
-                [
-                    'title' => 'Birthplace',
-                    'type' => 'string',
-                    'value' => 'Amsterdam'
-                ],
-            ]
-        ]);
-
-        $this->assertDatabaseHas('fields', [
-            'title' => 'Birthdate',
-            'type' => 'date',
-            'value' => today()->subYears(22)->format('Y-m-d'),
-            'subscriber_id' => 1
-        ])->assertDatabaseHas('fields', [
-            'title' => 'Birthplace',
-            'type' => 'string',
-            'value' => 'Amsterdam',
-            'subscriber_id' => 1
         ]);
     }
 }

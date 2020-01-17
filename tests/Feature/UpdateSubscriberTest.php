@@ -68,24 +68,26 @@ class UpdateSubscriberTest extends TestCase
     }
 
     /** @test */
-    public function a_subscriber_can_be_partially_updated_and_updates_are_returned()
+    public function a_subscriber_can_be_updated_and_it_is_returned()
     {
         $subscriber = factory('App\Subscriber')->create([
             'name' => 'Manel',
             'email' => 'manelgavalda@gmail.com'
         ]);
 
-        $this->put("/api/subscribers/{$subscriber->id}", [
+        $newAttributes = [
             'name' => 'New Name',
             'email' => 'manelgavalda@gmail.com'
-        ])->assertExactJson([
-            'id' => $subscriber->id,
-            'email' => 'manelgavalda@gmail.com',
-            'name' => 'New Name',
-            'state' => 'unconfirmed',
-            'created_at' => (string) $subscriber->created_at,
-            'updated_at' => (string) now()
-        ]);
+        ];
+
+        $this->put("/api/subscribers/{$subscriber->id}", $newAttributes)
+            ->assertJsonFragment($newAttributes);
+
+        $subscriber = $subscriber->fresh();
+
+        $this->assertEquals('New Name', $subscriber->name);
+        $this->assertEquals('manelgavalda@gmail.com', $subscriber->email);
+        $this->assertEquals('unconfirmed', $subscriber->state);
     }
 
     /** @test */

@@ -10,25 +10,23 @@ class UpdateFieldTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function a_field_title_a_type_and_a_value_are_required()
+    public function a_field_title_a_type_and_a_subscriber_are_required()
     {
     	$field = factory('App\Field')->create();
 
         $this->put("/api/fields/{$field->id}", [
             'title' => null,
             'type' => null,
-            'value' => null,
             'subscriber_id' => null
         ])->assertSessionHasErrors([
             'title' => 'The title field is required.',
             'type' => 'The type field is required.',
-            'value' => 'The value field is required.',
             'subscriber_id' => 'The subscriber id field is required.'
         ]);
     }
 
     /** @test */
-    public function a_field_can_be_updated()
+    public function a_field_can_be_updated_and_it_is_returned()
     {
     	$field = factory('App\Field')->create([
             'title' => 'birthdate',
@@ -37,12 +35,15 @@ class UpdateFieldTest extends TestCase
             'subscriber_id' => 1
     	]);
 
-    	$this->put("/api/fields/{$field->id}", [
+        $newAttributes = [
             'title' => 'birthplace',
             'type' => 'string',
             'value' => 'Amsterdam',
             'subscriber_id' => 2
-    	])->assertOk();
+        ];
+
+    	$this->put("/api/fields/{$field->id}", $newAttributes)
+            ->assertJsonFragment($newAttributes);
 
     	$field = $field->fresh();
 

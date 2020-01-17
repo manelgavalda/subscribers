@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Field;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -11,13 +10,22 @@ class GetSubscribersTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function subscribers_can_be_retrieved()
+    public function subscribers_are_retrieved_with_fields()
     {
-    	$subscribers = factory('App\Subscriber', 10)->create();
+    	$subscribers = factory('App\Subscriber', 3)->create()
+	    	->each(fn ($subscriber, $id) =>
+				factory('App\Field')->create(['subscriber_id' => $id])
+	    	);
 
-    	$response = $this->get('api/subscribers')->assertOk();
-
-    	$this->assertEquals($subscribers->count(), $response->original->count());
-    	$this->assertTrue($subscribers->first()->is($response->original->first()));
+    	$this->get('api/subscribers')
+    		->assertOk()
+    		->assertJsonCount(3)
+    		->assertJsonFragment([
+    			'id' => $subscribers->first()->id,
+    			'name' => $subscribers->first()->name,
+    			'email' => $subscribers->first()->email,
+    			'state' => $subscribers->first()->state
+    		])
+    		->assertSee($subscribers->first()->fields->first());
     }
 }
