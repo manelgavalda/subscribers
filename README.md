@@ -2,7 +2,7 @@
 
 ## :radio_button: About MailerLite Subscribers
 
-Laravel and VueJs application used to manage email subscribers and their fields.
+Laravel and VueJs application using Vuetify framework. Project aimed at helping on the task of managing email subscribers and their fields.
 
 ## :rocket: Installation
 
