@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/manelgavalda/MailerLiteSubscribers/master/public/img/MailerliteSubscribers.png" width="400"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/manelgavalda/MailerLiteSubscribers/master/public/img/MailerliteSubscribers.png" width="800"></p>
 
 ## MailerLite Subscribers
 
