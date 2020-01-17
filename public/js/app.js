@@ -2169,7 +2169,7 @@ __webpack_require__.r(__webpack_exports__);
     editSubscriber: function editSubscriber(subscriber, index) {
       this.editing = true;
       this.activeIndex = index;
-      this.subscriber = subscriber;
+      this.subscriber = _.clone(subscriber, true);
     },
     updateSubscriber: function updateSubscriber() {
       var _this = this;

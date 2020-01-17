@@ -143,7 +143,8 @@
         this.editing = true
 
         this.activeIndex = index
-        this.subscriber = subscriber
+
+        this.subscriber = _.clone(subscriber, true)
       },
       updateSubscriber() {
         this.saving = true
