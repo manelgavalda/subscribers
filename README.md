@@ -2,7 +2,7 @@
 
 ## :radio_button: About MailerLite Subscribers
 
-Laravel and VueJs application using Vuetify framework. A great way to handle newsletter subscribers.
+Laravel and VueJs application using Vuetify framework. A great way to handle your newsletter subscribers.
 
 ## :rocket: Installation
 
