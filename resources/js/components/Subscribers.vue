@@ -14,8 +14,8 @@
 
 		<v-content>
 			<v-container
-				class="fill-height"
 				fluid
+				class="fill-height"
 			>
 				<v-row>
 					<v-col xs="12" md="6">

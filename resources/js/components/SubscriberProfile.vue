@@ -1,72 +1,64 @@
 <template>
 	<v-container>
-		<v-card class="mx-auto" max-width="600" heigth="100px">
+		<v-card
+			outlined
+			min-width="450"
+			style="height: 450px"
+		>
 			<v-toolbar color="#55A256" dark>
 				<v-toolbar-title
 					v-text="(editing ? 'Editing' : 'New') +  ' Subscriber'"
 				></v-toolbar-title>
 			</v-toolbar>
 			<v-card-text>
-				<v-content>
-					<v-col>
-						<v-row>
-							<v-text-field
-								filled
-								outlined
-								required
-								label="Name*"
-								v-model="subscriber.name"
-							></v-text-field>
-						</v-row>
-						<v-row>
-							<errors
-								:errors="errors.name"
-							></errors>
-						</v-row>
-						<v-row>
-							<v-text-field
-								filled
-								outlined
-								required
-								label="Email*"
-								v-model="subscriber.email"
-							></v-text-field>
-						</v-row>
-						<v-row>
-							<errors
-								:errors="errors.email"
-							></errors>
-						</v-row>
-						<v-row>
-							<v-select
-								filled
-								outlined
-								required
-								label="State*"
-								v-model="subscriber.state"
-								:items="Object.keys(subscriberStates)"
-							></v-select>
-						</v-row>
-					</v-col>
-				</v-content>
+				<v-col>
+					<v-text-field
+						filled
+						outlined
+						required
+						label="Name*"
+						v-model="subscriber.name"
+					></v-text-field>
+					<errors
+						:errors="errors.name"
+					></errors>
+
+					<v-text-field
+						filled
+						outlined
+						required
+						label="Email*"
+						v-model="subscriber.email"
+					></v-text-field>
+					<errors
+						:errors="errors.email"
+					></errors>
+
+					<v-select
+						filled
+						outlined
+						required
+						label="State*"
+						v-model="subscriber.state"
+						:items="Object.keys(subscriberStates)"
+					></v-select>
+				</v-col>
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer></v-spacer>
 				<v-btn
-					text
-					color="blue darken-1"
 					v-show="editing"
 					@click="finishEdit"
 				>Cancel</v-btn>
 				<v-btn
-					text
+					dark
 					color="#55A255"
 					:disabled="saving"
 					v-if="! editing"
 					@click="createSubscriber"
 				>Create</v-btn>
 				<v-btn
-					text
+					dark
 					color=#55A255
 					:disabled="saving"
 					v-else

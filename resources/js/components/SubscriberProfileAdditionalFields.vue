@@ -1,7 +1,8 @@
 <template>
 	<v-card
+		outlined
+		min-width="450"
 		class="mx-auto mt10"
-		max-width="595"
 	>
 		<v-toolbar color="#55A256" dark>
 			<v-toolbar-title>Additional Fields</v-toolbar-title>
@@ -12,7 +13,7 @@
 					<v-col cols="6">
 						<v-text-field
 							filled
-							shaped
+							outlined
 							required
 							label="New Field"
 							v-model="field.title"
@@ -21,7 +22,7 @@
 					<v-col cols="6">
 						<v-select
 							filled
-							shaped
+							outlined
 							required
 							label="Type"
 							append-outer-icon="mdi-plus"
@@ -47,7 +48,6 @@
 											v-model.number="field.value"
 										></v-checkbox>
 										<v-text-field
-											shaped
 											outlined
 											required
 											class="mx-5"
@@ -58,12 +58,22 @@
 										></v-text-field>
 									</v-col>
 									<v-col cols="2">
-										<v-icon @click="updateField(field, index)">
-											mdi-content-save
-										</v-icon>
-										<v-icon @click="deleteField(field.id, index)">
-											mdi-delete
-										</v-icon>
+										<v-btn
+						            		dark
+						            		small
+						            		color="green"
+						            		@click="updateField(field, index)"
+					            		>
+											<v-icon small>mdi-content-save</v-icon>
+					            		</v-btn>
+										<v-btn
+						            		dark
+						            		small
+						            		color="red"
+						            		@click="deleteField(field.id, index)"
+					            		>
+											<v-icon small>mdi-delete</v-icon>
+					            		</v-btn>
 									</v-col>
 								</v-row>
 							</v-card>
