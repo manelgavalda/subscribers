@@ -21,7 +21,7 @@
                         </v-list-item-content>
                         <v-list-item-content>
                             <v-list-item-title>
-                                {{ field.value }}
+                                <b>{{ field.value }}</b>
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>

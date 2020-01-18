@@ -21170,11 +21170,7 @@ var render = function() {
                             "v-list-item-content",
                             [
                               _c("v-list-item-title", [
-                                _vm._v(
-                                  "\n                            " +
-                                    _vm._s(field.value) +
-                                    "\n                        "
-                                )
+                                _c("b", [_vm._v(_vm._s(field.value))])
                               ])
                             ],
                             1
