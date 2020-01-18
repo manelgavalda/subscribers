@@ -74,6 +74,9 @@
 				this.$refs.subscriberProfile
 					.editSubscriber(data.subscriber, data.index)
 			}
+		},
+		filters: {
+			capitalize: text => text.charAt(0).toUpperCase() + text.slice(1)
 		}
 	}
 </script>

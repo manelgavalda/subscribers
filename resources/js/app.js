@@ -9,7 +9,10 @@ require('./bootstrap');
 window.Vue = require('vue');
 
 import Vuetify from 'vuetify';
+
 Vue.use(Vuetify);
+
+Vue.filter('capitalize', text => text.charAt(0).toUpperCase() + text.slice(1))
 
 /**
  * The following block of code may be used to automatically register your
@@ -30,5 +33,5 @@ files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(
 
 const app = new Vue({
 	vuetify: new Vuetify,
-    el: '#app',
+    el: '#app'
 });

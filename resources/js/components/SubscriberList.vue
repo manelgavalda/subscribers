@@ -68,25 +68,9 @@
 				</v-list>
 			</v-card-text>
 		</v-card>
-		<v-card outlined v-if="subscriber" class="mt10">
-			<v-toolbar color="#55A256" dark>
-				<v-toolbar-title>
-					{{ subscriber.name }} additional fields
-				</v-toolbar-title>
-			</v-toolbar>
-			<v-card-text>
-			    <v-list-item
-			    	:key="field.id"
-			    	v-for="field in subscriber.fields"
-		    	>
-			      	<v-list-item-content>
-			        	<v-list-item-subtitle>
-			        		{{ `${field.title} (${field.type}): ${field.value}` }}
-			        	</v-list-item-subtitle>
-			      	</v-list-item-content>
-			    </v-list-item>
-			</v-card-text>
-		</v-card>
+		<subscriber-list-additional-fields
+			ref="subscriberListAdditionalFields"
+		></subscriber-list-additional-fields>
 	</v-container>
 </template>
 <script>
@@ -106,11 +90,7 @@
 					.then(() => this.$emit('removeSubscriber', index))
 			},
 			showSubscriberFields(subscriber) {
-				if(! this.subscriber || subscriber.id != this.subscriber.id) {
-					return this.subscriber = subscriber
-				}
-
-				this.subscriber = null
+				this.$refs.subscriberListAdditionalFields.show(subscriber)
 			}
 		}
 	}
