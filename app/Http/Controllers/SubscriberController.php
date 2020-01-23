@@ -48,8 +48,6 @@ class SubscriberController extends Controller
     {
     	$subscriber->delete();
 
-        $subscriber->fields()->delete();
-
         return response($subscriber, 204);
     }
 }

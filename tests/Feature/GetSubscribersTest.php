@@ -13,8 +13,8 @@ class GetSubscribersTest extends TestCase
     public function subscribers_are_retrieved_with_fields()
     {
     	$subscribers = factory('App\Subscriber', 3)->create()
-	    	->each(fn ($subscriber, $id) =>
-				factory('App\Field')->create(['subscriber_id' => $id])
+	    	->each(fn ($subscriber) =>
+				factory('App\Field')->create(['subscriber_id' => $subscriber->id])
 	    	);
 
     	$this->get('api/subscribers')

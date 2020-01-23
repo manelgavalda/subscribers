@@ -2,9 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Field;
+use Tests\TestCase;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 
 class AddFieldTest extends TestCase
 {
@@ -32,7 +33,7 @@ class AddFieldTest extends TestCase
         $attributes = [
             'title' => 'generic',
             'type' => 'string',
-            'subscriber_id' => 1
+            'subscriber_id' => factory('App\Subscriber')->create()->id
         ];
 
         factory('App\Field')->create($attributes);
@@ -40,6 +41,8 @@ class AddFieldTest extends TestCase
         $this->ExpectException(QueryException::class);
 
         $this->post('/api/fields', $attributes);
+
+        $this->assertEquals(1, Field::count());
     }
 
     /** @test */
@@ -48,7 +51,7 @@ class AddFieldTest extends TestCase
     	$attributes = [
             'title' => 'birthplace',
             'type' => 'string',
-            'subscriber_id' => 1
+            'subscriber_id' => factory('App\Subscriber')->create()->id
         ];
 
         $this->post('/api/fields', $attributes)

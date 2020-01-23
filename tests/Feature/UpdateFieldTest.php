@@ -32,14 +32,14 @@ class UpdateFieldTest extends TestCase
             'title' => 'birthdate',
             'type' => 'date',
             'value' => today()->subYears(22)->format('Y-m-d'),
-            'subscriber_id' => 1
+            'subscriber_id' => factory('App\Subscriber')->create()->id
     	]);
 
         $newAttributes = [
             'title' => 'birthplace',
             'type' => 'string',
             'value' => 'Amsterdam',
-            'subscriber_id' => 2
+            'subscriber_id' => factory('App\Subscriber')->create()->id
         ];
 
     	$this->put("/api/fields/{$field->id}", $newAttributes)
@@ -47,9 +47,9 @@ class UpdateFieldTest extends TestCase
 
     	$field = $field->fresh();
 
-    	$this->assertEquals('birthplace', $field->title);
-    	$this->assertEquals('string', $field->type);
-    	$this->assertEquals('Amsterdam', $field->value);
-    	$this->assertEquals(2, $field->subscriber_id);
+    	$this->assertEquals($newAttributes['title'], $field->title);
+    	$this->assertEquals($newAttributes['type'], $field->type);
+    	$this->assertEquals($newAttributes['value'], $field->value);
+    	$this->assertEquals($newAttributes['subscriber_id'], $field->subscriber_id);
     }
 }
