@@ -1,6 +1,6 @@
 <p align="center"><img src="https://raw.githubusercontent.com/manelgavalda/MailerLiteSubscribers/master/public/img/Subscribers.png" width="900"></p>
 
-## :radio_button: About MailerLite Subscribers
+## :radio_button: About Laravel Subscribers
 
 Laravel and VueJs application using Vuetify framework. A great way to handle your newsletter subscribers.
 
@@ -10,11 +10,11 @@ Please check the official laravel installation guide for server requirements bef
 
 Clone the repository
 
-    git clone git@github.com:manelgavalda/MailerLiteSubscribers.git
+    git clone git@github.com:manelgavalda/LaravelSubscribers.git
 
 Switch to the repo folder
 
-    cd MailerLiteSubscribers
+    cd LaravelSubscribers
 
 Install all the dependencies using composer
 
