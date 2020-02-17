@@ -21658,7 +21658,7 @@ var render = function() {
         "v-app-bar",
         { attrs: { app: "", dark: "", color: "#55A255" } },
         [
-          _c("v-toolbar-title", [_c("b", [_vm._v("MailerLite Subscribers")])]),
+          _c("v-toolbar-title", [_c("b", [_vm._v("Subscribers")])]),
           _vm._v(" "),
           _c("v-spacer"),
           _vm._v(" "),

@@ -5,7 +5,7 @@
 			dark
 			color="#55A255"
 		>
-			<v-toolbar-title><b>MailerLite Subscribers</b></v-toolbar-title>
+			<v-toolbar-title><b>Subscribers</b></v-toolbar-title>
 
 			<v-spacer></v-spacer>
 
